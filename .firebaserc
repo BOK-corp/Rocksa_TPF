@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "rocksatpf": "rocksatpf",
+    "default": "rocksatpf"
+  },
+  "targets": {},
+  "etags": {}
+}

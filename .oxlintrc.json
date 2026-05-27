@@ -1,0 +1,14 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "import"],
+  "rules": {
+    "no-unused-vars": "error",
+    "no-console": "warn",
+    "eqeqeq": "error",
+    "prefer-const": "error",
+    "no-var": "error",
+    "react/jsx-key": "error",
+    "react/no-array-index-key": "warn"
+  },
+  "ignorePatterns": ["**/dist/**", "**/build/**", "**/node_modules/**", "**/.vite/**"]
+}

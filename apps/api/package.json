@@ -1,0 +1,21 @@
+{
+  "name": "@rocksa/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch run src/index.ts",
+    "start": "bun run src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "echo 'no build (run with bun)'"
+  },
+  "dependencies": {
+    "@rocksa/db": "workspace:*",
+    "@rocksa/domain": "workspace:*",
+    "drizzle-orm": "^0.36.0",
+    "firebase-admin": "^13.0.1",
+    "hono": "^4.6.10",
+    "postgres": "^3.4.5",
+    "zod": "^3.23.8"
+  }
+}
