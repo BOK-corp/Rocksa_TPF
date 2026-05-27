@@ -1,0 +1,37 @@
+import { db, sql } from "./client.ts";
+import { specimens } from "./schema.ts";
+
+type Seed = typeof specimens.$inferInsert;
+
+const DEMO: Seed[] = [
+  { slug: "clear-quartz-cluster", name: "Clear Quartz Cluster", category: "crystals", subcategory: "Quartz", description: "High-clarity specimen from the Swiss Alps, featuring multiple termination points.", priceCents: 14_500_00, originCountry: "Switzerland", imageUrl: "", attributes: { Color: "Clear", Clarity: "VVS", Carat: "85.00" } },
+  { slug: "amethyst-geode-slice", name: "Amethyst Geode Slice", category: "crystals", subcategory: "Quartz", description: "Deep purple coloration with a distinct agate banding edge.", priceCents: 35_000_00, originCountry: "Uruguay", imageUrl: "", attributes: { Color: "Purple", Clarity: "VS", Carat: "1,240" } },
+  { slug: "raw-aquamarine", name: "Raw Aquamarine", category: "crystals", subcategory: "Beryl", description: "Gem-quality Beryl crystal showing excellent natural hexagonal form.", priceCents: 85_000_00, originCountry: "Pakistan", imageUrl: "", attributes: { Color: "Blue", Clarity: "VVS", Carat: "412" } },
+  { slug: "deep-blue-sapphire", name: "Deep Blue Sapphire", category: "crystals", subcategory: "Corundum", description: "A stunning 2.5 carat natural sapphire exhibiting a velvety deep blue hue with exceptional saturation.", priceCents: 12_450_00, compareAtCents: 14_000_00, originCountry: "Sri Lanka", imageUrl: "", attributes: { Weight: "2.50 ct", Cut: "Oval Mixed", Hardness: "9.0 (Mohs)", "Specific Gravity": "4.00", Clarity: "VVS", Treatment: "Heat", Color: "Blue" } },
+  { slug: "bismuth-hopper-crystal", name: "Bismuth Hopper Crystal", category: "crystals", subcategory: "Synthetic", description: "Lab-grown, intense iridescence. Stair-stepped cubic geometry.", priceCents: 8_500_00, stockStatus: "low_stock", originCountry: "Germany", imageUrl: "", attributes: { Color: "Iridescent" } },
+  { slug: "fluorite-octahedron", name: "Fluorite Octahedron", category: "crystals", subcategory: "Fluorite", description: "Cleaved form, deep emerald green. Sharp octahedral cleavage.", priceCents: 11_000_00, originCountry: "USA", imageUrl: "", attributes: { Color: "Green", Clarity: "VS", Hardness: "4 (Mohs)" } },
+  { slug: "imperial-amethyst", name: "Imperial Amethyst", category: "crystals", subcategory: "Quartz", description: "Cathedral-grade Uruguayan amethyst with saturated royal purple hue.", priceCents: 3_400_00, stockStatus: "on_display", originCountry: "Uruguay", imageUrl: "", attributes: { Color: "Purple", Clarity: "VS" } },
+  { slug: "tourmaline-rough", name: "Paraiba Tourmaline Rough", category: "crystals", subcategory: "Tourmaline", description: "124.5 ct uncut Paraiba tourmaline from São José da Batalha.", priceCents: 145_000_00, originCountry: "Brazil", imageUrl: "", attributes: { Color: "Blue", Weight: "124.5 ct" } },
+  { slug: "topaz-imperial", name: "Imperial Topaz", category: "crystals", subcategory: "Topaz", description: "Champagne-orange Brazilian topaz with brilliant clarity.", priceCents: 6_800_00, originCountry: "Brazil", imageUrl: "", attributes: { Color: "Iridescent", Clarity: "VVS" } },
+  { slug: "spinel-burmese", name: "Burmese Red Spinel", category: "crystals", subcategory: "Spinel", description: "Pigeon-blood saturation rivaling Burmese ruby.", priceCents: 9_900_00, originCountry: "Myanmar", imageUrl: "", attributes: { Color: "Purple", Clarity: "VS" } },
+  { slug: "midnight-obsidian", name: "Midnight Obsidian", category: "igneous", description: "Volcanic glass, jet black with conchoidal fracture pattern.", priceCents: 1_250_00, originCountry: "Mexico", imageUrl: "", attributes: { Color: "Black", Hardness: "5.5 (Mohs)" } },
+  { slug: "snowflake-obsidian", name: "Snowflake Obsidian", category: "igneous", description: "Cristobalite inclusions form sharp white snowflakes on jet glass.", priceCents: 950_00, originCountry: "USA", imageUrl: "", attributes: { Color: "Black" } },
+  { slug: "rose-granite-slab", name: "Rose Granite Slab", category: "igneous", description: "Pegmatitic granite slab with bold orthoclase phenocrysts.", priceCents: 2_100_00, originCountry: "Finland", imageUrl: "", attributes: { Color: "Purple" } },
+  { slug: "basalt-column", name: "Columnar Basalt", category: "igneous", description: "Hexagonal basalt column section from the Giant's Causeway region.", priceCents: 3_400_00, originCountry: "Ireland", imageUrl: "", attributes: { Color: "Black" } },
+  { slug: "pumice-specimen", name: "Pumice Specimen", category: "igneous", description: "Featherweight vesicular pumice with classic frothy texture.", priceCents: 280_00, originCountry: "Italy", imageUrl: "", attributes: { Color: "Clear" } },
+  { slug: "malachite-polished-slab", name: "Malachite Polished Slab", category: "metamorphic", description: "Vivid banding, Congolese origin. Hand-polished to a mirror finish.", priceCents: 28_000_00, originCountry: "DR Congo", imageUrl: "", attributes: { Color: "Green", "Specific Gravity": "3.80" } },
+  { slug: "royal-lapis-lazuli", name: "Royal Lapis Lazuli", category: "metamorphic", description: "Premium Afghan lapis, golden pyrite flecks throughout.", priceCents: 850_00, originCountry: "Afghanistan", imageUrl: "", attributes: { Color: "Blue", Hardness: "5.5 (Mohs)" } },
+  { slug: "carrara-marble-block", name: "Carrara Marble Block", category: "metamorphic", description: "Quarry-fresh Carrara, fine even grain favored for editorial sculpture.", priceCents: 5_600_00, originCountry: "Italy", imageUrl: "", attributes: { Color: "Clear" } },
+  { slug: "verdite-cabochon", name: "Verdite Cabochon", category: "metamorphic", description: "African verdite cabochon with chromite swirling.", priceCents: 1_900_00, originCountry: "Zimbabwe", imageUrl: "", attributes: { Color: "Green" } },
+  { slug: "muscovite-book", name: "Muscovite Book", category: "metamorphic", description: "Sheet mica 'book' showing perfect basal cleavage.", priceCents: 740_00, originCountry: "India", imageUrl: "", attributes: { Color: "Clear" } },
+  { slug: "ammonite-fossil", name: "Ammonite Fossil", category: "sedimentary", description: "Madagascar ammonite cross-section showing chambered iridescent shell.", priceCents: 4_200_00, originCountry: "Madagascar", imageUrl: "", attributes: { Color: "Iridescent" } },
+  { slug: "selenite-tower", name: "Selenite Tower", category: "sedimentary", description: "Tall selenite tower with silky satin spar luster.", priceCents: 360_00, originCountry: "Morocco", imageUrl: "", attributes: { Color: "Clear" } },
+  { slug: "trilobite-plate", name: "Trilobite Plate", category: "sedimentary", description: "Moroccan trilobite plate, articulated specimen on natural matrix.", priceCents: 1_400_00, originCountry: "Morocco", imageUrl: "", attributes: { Color: "Black" } },
+  { slug: "banded-iron-formation", name: "Banded Iron Formation", category: "sedimentary", description: "Polished BIF slab, alternating hematite and chert bands.", priceCents: 1_150_00, originCountry: "Australia", imageUrl: "", attributes: { Color: "Black" } },
+  { slug: "petrified-wood-round", name: "Petrified Wood Round", category: "sedimentary", description: "Arizona petrified wood round, fully agatized cell structure.", priceCents: 2_750_00, originCountry: "USA", imageUrl: "", attributes: { Color: "Iridescent" } },
+];
+
+await db.delete(specimens);
+await db.insert(specimens).values(DEMO);
+await sql.end();
+console.log(`✓ seeded ${DEMO.length} specimens`);

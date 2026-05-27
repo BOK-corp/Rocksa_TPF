@@ -1,0 +1,21 @@
+{
+  "name": "@rocksa/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "echo 'no build (source package)'"
+  },
+  "dependencies": {
+    "firebase": "^12.11.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}

@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: rocksa-db
+    environment:
+      POSTGRES_USER: rocksa
+      POSTGRES_PASSWORD: rocksa
+      POSTGRES_DB: rocksa
+    ports:
+      - "5432:5432"
+    volumes:
+      - rocksa_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rocksa -d rocksa"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  rocksa_pgdata:

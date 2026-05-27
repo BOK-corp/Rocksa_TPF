@@ -1,0 +1,17 @@
+@import "tailwindcss";
+@import "@rocksa/ui/tokens.css";
+
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
+@source "../src/**/*.{ts,tsx}";
+
+html,
+body {
+  background-color: var(--color-surface-muted);
+  color: var(--color-ink-900);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
