@@ -14,9 +14,30 @@ const STATS = [
 ];
 
 const SHIPMENTS = [
-  { icon: "💎", name: "Amethyst Geode Cluster", origin: "Uruguay", status: "In Transit", statusTone: "brand" as const, eta: "Oct 24" },
-  { icon: "△", name: "Obsidian Block", origin: "Mexico", status: "Customs Hold", statusTone: "danger" as const, eta: "Pending" },
-  { icon: "◆", name: "Lapis Lazuli Slab", origin: "Afghanistan", status: "Processing", statusTone: "neutral" as const, eta: "Nov 02" },
+  {
+    icon: "💎",
+    name: "Amethyst Geode Cluster",
+    origin: "Uruguay",
+    status: "In Transit",
+    statusTone: "brand" as const,
+    eta: "Oct 24",
+  },
+  {
+    icon: "△",
+    name: "Obsidian Block",
+    origin: "Mexico",
+    status: "Customs Hold",
+    statusTone: "danger" as const,
+    eta: "Pending",
+  },
+  {
+    icon: "◆",
+    name: "Lapis Lazuli Slab",
+    origin: "Afghanistan",
+    status: "Processing",
+    statusTone: "neutral" as const,
+    eta: "Nov 02",
+  },
 ];
 
 const ACTIVITY = [
@@ -41,16 +62,13 @@ function Overview() {
               <Card key={s.label}>
                 <CardBody>
                   <div className="flex items-start justify-between">
-                    <p className="text-xs uppercase tracking-wider text-ink-500">
-                      {s.label}
-                    </p>
+                    <p className="text-xs uppercase tracking-wider text-ink-500">{s.label}</p>
                     <Icon className="text-brand-600" />
                   </div>
                   <p className="font-display text-5xl mt-3">{s.value}</p>
                   <p
                     className={
-                      "text-xs mt-1 " +
-                      (s.hintTone === "danger" ? "text-rose-600" : "text-ink-400")
+                      "text-xs mt-1 " + (s.hintTone === "danger" ? "text-rose-600" : "text-ink-400")
                     }
                   >
                     {s.hint}

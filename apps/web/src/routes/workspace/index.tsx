@@ -11,9 +11,8 @@ function WorkspaceWelcome() {
         <p className="font-display text-brand-600 text-xl">Rocksa</p>
         <h1 className="font-display text-4xl mt-6">Welcome to your Workspace</h1>
         <p className="text-ink-500 mt-3">
-          Step into a luminous environment engineered for precision. Manage your
-          rare gemstone acquisitions, track provenance, and orchestrate your
-          collection with absolute clarity.
+          Step into a luminous environment engineered for precision. Manage your rare gemstone
+          acquisitions, track provenance, and orchestrate your collection with absolute clarity.
         </p>
         <div className="mt-8 space-y-3">
           {[

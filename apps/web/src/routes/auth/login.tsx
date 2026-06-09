@@ -43,9 +43,7 @@ function Login() {
         <CardBody className="space-y-6">
           <div className="text-center">
             <h1 className="font-display text-4xl">Welcome Back</h1>
-            <p className="text-ink-500 text-sm mt-1">
-              Sign in to your curated collection.
-            </p>
+            <p className="text-ink-500 text-sm mt-1">Sign in to your curated collection.</p>
           </div>
           <form className="space-y-3" onSubmit={submit}>
             <Input

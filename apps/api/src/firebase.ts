@@ -38,9 +38,10 @@ const decodeUnverified = (token: string): DecodedToken | null => {
   try {
     const [, payload] = token.split(".");
     if (!payload) return null;
-    const json = JSON.parse(
-      Buffer.from(payload, "base64").toString("utf8"),
-    ) as Record<string, unknown>;
+    const json = JSON.parse(Buffer.from(payload, "base64").toString("utf8")) as Record<
+      string,
+      unknown
+    >;
     const uid =
       typeof json["user_id"] === "string"
         ? (json["user_id"] as string)
@@ -58,9 +59,7 @@ const decodeUnverified = (token: string): DecodedToken | null => {
   }
 };
 
-export const verifyIdToken = async (
-  token: string,
-): Promise<DecodedToken | null> => {
+export const verifyIdToken = async (token: string): Promise<DecodedToken | null> => {
   if (env.FIREBASE_AUTH_EMULATOR_HOST) return decodeUnverified(token);
   try {
     const auth = await firebaseAuth();

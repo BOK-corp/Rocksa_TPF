@@ -10,11 +10,13 @@ interface Props {
 
 const initials = (name: string | null | undefined): string => {
   if (!name) return "JC";
-  return name
-    .split(/\s+/)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("")
-    .slice(0, 2) || "JC";
+  return (
+    name
+      .split(/\s+/)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("")
+      .slice(0, 2) || "JC"
+  );
 };
 
 export const TopNav = ({ variant = "full" }: Props) => {
@@ -49,10 +51,7 @@ export const TopNav = ({ variant = "full" }: Props) => {
 
         <div className="relative flex-1 max-w-xl mx-auto">
           <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
-          <Input
-            placeholder="Search collection…"
-            className="pl-10 bg-white/80 border-ink-700/5"
-          />
+          <Input placeholder="Search collection…" className="pl-10 bg-white/80 border-ink-700/5" />
         </div>
 
         <nav className="flex items-center gap-2 text-brand-600">
@@ -74,11 +73,7 @@ export const TopNav = ({ variant = "full" }: Props) => {
             <HelpIcon />
           </button>
           {authed && (
-            <Avatar
-              fallback={initials(label)}
-              className="ml-1"
-              title={label ?? undefined}
-            />
+            <Avatar fallback={initials(label)} className="ml-1" title={label ?? undefined} />
           )}
         </nav>
 

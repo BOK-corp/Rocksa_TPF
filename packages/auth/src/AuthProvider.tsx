@@ -1,11 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   GoogleAuthProvider,
   OAuthProvider,
@@ -57,11 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         await signInWithEmailAndPassword(firebaseAuth, email, password);
       },
       signUp: async (email, password, fullName) => {
-        const cred = await createUserWithEmailAndPassword(
-          firebaseAuth,
-          email,
-          password,
-        );
+        const cred = await createUserWithEmailAndPassword(firebaseAuth, email, password);
         if (fullName) await updateProfile(cred.user, { displayName: fullName });
       },
       signOut: async () => {
