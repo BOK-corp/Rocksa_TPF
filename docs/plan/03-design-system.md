@@ -9,7 +9,7 @@ Defined in `packages/ui/src/tokens.css` using Tailwind v4's `@theme`:
 ```css
 @theme {
   /* Brand */
-  --color-brand-50:  #f5f3ff;
+  --color-brand-50: #f5f3ff;
   --color-brand-100: #ede9fe;
   --color-brand-200: #ddd6fe;
   --color-brand-500: #7c3aed;
@@ -17,9 +17,9 @@ Defined in `packages/ui/src/tokens.css` using Tailwind v4's `@theme`:
   --color-brand-700: #5b21b6;
 
   /* Surface */
-  --color-surface:        #ffffff;
-  --color-surface-muted:  #faf9ff; /* app background lilac */
-  --color-surface-soft:   #f3f0fb;
+  --color-surface: #ffffff;
+  --color-surface-muted: #faf9ff; /* app background lilac */
+  --color-surface-soft: #f3f0fb;
 
   /* Ink */
   --color-ink-900: #0f0f14;
@@ -30,11 +30,11 @@ Defined in `packages/ui/src/tokens.css` using Tailwind v4's `@theme`:
   /* Semantics */
   --color-success: #16a34a;
   --color-warning: #d97706;
-  --color-danger:  #dc2626;
+  --color-danger: #dc2626;
 
   /* Typography */
   --font-display: "Source Serif 4", "Cardo", ui-serif, Georgia, serif;
-  --font-sans:    "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 
   /* Radii */
   --radius-sm: 0.5rem;
@@ -42,8 +42,7 @@ Defined in `packages/ui/src/tokens.css` using Tailwind v4's `@theme`:
   --radius-lg: 1rem;
 
   /* Shadows */
-  --shadow-card: 0 1px 2px rgba(15, 15, 20, 0.04),
-                 0 8px 24px rgba(15, 15, 20, 0.04);
+  --shadow-card: 0 1px 2px rgba(15, 15, 20, 0.04), 0 8px 24px rgba(15, 15, 20, 0.04);
 }
 ```
 
@@ -67,6 +66,6 @@ Build only what we need now; add more as phases require them.
 
 ## Acceptance
 
-- Storybook is *not* required. Instead, a `/_dev/components` route in the web
+- Storybook is _not_ required. Instead, a `/_dev/components` route in the web
   app renders every primitive in every variant for manual review.
 - Snapshot tests for each primitive's variants.

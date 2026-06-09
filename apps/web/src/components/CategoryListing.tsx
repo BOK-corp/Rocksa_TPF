@@ -80,17 +80,13 @@ export const CategoryListing = ({ category, search, inert = false }: Props) => {
           <div className="flex items-end justify-between">
             <div>
               <h1 className="font-display text-5xl">{titleCase(category)}</h1>
-              <p className="text-ink-500 mt-1">
-                Displaying {items.length} curated specimens.
-              </p>
+              <p className="text-ink-500 mt-1">Displaying {items.length} curated specimens.</p>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-sm text-ink-500">Sort By:</span>
               <Select
                 value={search.sort ?? "newest"}
-                onValueChange={(v) =>
-                  setSearch({ sort: v as ListingSearch["sort"] })
-                }
+                onValueChange={(v) => setSearch({ sort: v as ListingSearch["sort"] })}
               >
                 <SelectTrigger className="w-48">
                   <SelectValue />
@@ -108,20 +104,13 @@ export const CategoryListing = ({ category, search, inert = false }: Props) => {
             <aside className="space-y-6 text-sm">
               {subcategories.length > 0 && (
                 <div>
-                  <p className="text-xs uppercase tracking-wider text-ink-500">
-                    Sub-categories
-                  </p>
+                  <p className="text-xs uppercase tracking-wider text-ink-500">Sub-categories</p>
                   <div className="mt-3 space-y-2">
                     {subcategories.map((sub) => (
-                      <label
-                        key={sub}
-                        className="flex items-center gap-2 text-ink-700"
-                      >
+                      <label key={sub} className="flex items-center gap-2 text-ink-700">
                         <Checkbox
                           checked={search.sub === sub}
-                          onCheckedChange={(v) =>
-                            setSearch({ sub: v ? sub : undefined })
-                          }
+                          onCheckedChange={(v) => setSearch({ sub: v ? sub : undefined })}
                         />
                         {sub}
                       </label>
@@ -130,9 +119,7 @@ export const CategoryListing = ({ category, search, inert = false }: Props) => {
                 </div>
               )}
               <div>
-                <p className="text-xs uppercase tracking-wider text-ink-500">
-                  Filters
-                </p>
+                <p className="text-xs uppercase tracking-wider text-ink-500">Filters</p>
                 <div className="mt-3 space-y-3">
                   <div>
                     <Label htmlFor="price-min">Price Range</Label>
@@ -144,9 +131,7 @@ export const CategoryListing = ({ category, search, inert = false }: Props) => {
                         defaultValue={search.minPrice ?? ""}
                         onBlur={(e) =>
                           setSearch({
-                            minPrice: e.target.value
-                              ? Number(e.target.value)
-                              : undefined,
+                            minPrice: e.target.value ? Number(e.target.value) : undefined,
                           })
                         }
                       />
@@ -157,9 +142,7 @@ export const CategoryListing = ({ category, search, inert = false }: Props) => {
                         defaultValue={search.maxPrice ?? ""}
                         onBlur={(e) =>
                           setSearch({
-                            maxPrice: e.target.value
-                              ? Number(e.target.value)
-                              : undefined,
+                            maxPrice: e.target.value ? Number(e.target.value) : undefined,
                           })
                         }
                       />

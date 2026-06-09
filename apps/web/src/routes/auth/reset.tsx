@@ -29,8 +29,8 @@ function Reset() {
         <p className="font-display text-brand-600 text-2xl">◇ Rocksa</p>
         <h1 className="font-display text-3xl mt-8">Reset Password</h1>
         <p className="text-ink-500 text-sm mt-2">
-          Enter the email address associated with your account, and we'll send
-          a securely encrypted link to reset your password.
+          Enter the email address associated with your account, and we'll send a securely encrypted
+          link to reset your password.
         </p>
         <form className="mt-8 space-y-4" onSubmit={submit}>
           <div>
@@ -46,9 +46,7 @@ function Reset() {
           </div>
           {error && <p className="text-rose-600 text-sm">{error}</p>}
           {sent ? (
-            <p className="text-sm text-emerald-700">
-              ✓ Reset link sent. Check your inbox.
-            </p>
+            <p className="text-sm text-emerald-700">✓ Reset link sent. Check your inbox.</p>
           ) : (
             <Button type="submit" className="w-full" size="lg">
               Send Reset Link →

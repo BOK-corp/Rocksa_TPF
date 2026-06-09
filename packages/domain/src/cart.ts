@@ -7,14 +7,9 @@ export const addItem = (
 ): CartItem[] => {
   const existing = items.find((i) => i.specimenId === specimen.id);
   if (existing) {
-    return items.map((i) =>
-      i.specimenId === specimen.id ? { ...i, qty: i.qty + qty } : i,
-    );
+    return items.map((i) => (i.specimenId === specimen.id ? { ...i, qty: i.qty + qty } : i));
   }
-  return [
-    ...items,
-    { specimenId: specimen.id, qty, unitPriceCents: specimen.priceCents },
-  ];
+  return [...items, { specimenId: specimen.id, qty, unitPriceCents: specimen.priceCents }];
 };
 
 export const setQty = (
@@ -26,10 +21,8 @@ export const setQty = (
     ? items.filter((i) => i.specimenId !== specimenId)
     : items.map((i) => (i.specimenId === specimenId ? { ...i, qty } : i));
 
-export const removeItem = (
-  items: ReadonlyArray<CartItem>,
-  specimenId: string,
-): CartItem[] => items.filter((i) => i.specimenId !== specimenId);
+export const removeItem = (items: ReadonlyArray<CartItem>, specimenId: string): CartItem[] =>
+  items.filter((i) => i.specimenId !== specimenId);
 
 export const subtotal = (items: ReadonlyArray<CartItem>): number =>
   items.reduce((sum, i) => sum + i.unitPriceCents * i.qty, 0);

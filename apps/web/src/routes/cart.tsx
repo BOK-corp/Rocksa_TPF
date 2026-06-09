@@ -19,7 +19,9 @@ function CartPage() {
             Rocksa
           </Link>
           <nav className="flex gap-8 font-display text-lg">
-            <Link to="/" className="text-ink-900">Collections</Link>
+            <Link to="/" className="text-ink-900">
+              Collections
+            </Link>
             <a className="text-ink-500">Custom Design</a>
             <a className="text-ink-500">Investment</a>
             <a className="text-ink-500">Journal</a>
@@ -31,8 +33,7 @@ function CartPage() {
       <main className="mx-auto max-w-[1200px] px-6 py-12">
         <h1 className="font-display text-5xl">Your Cart</h1>
         <p className="text-ink-500 mt-2">
-          {items.length} item{items.length === 1 ? "" : "s"} meticulously
-          selected.
+          {items.length} item{items.length === 1 ? "" : "s"} meticulously selected.
         </p>
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_360px]">
@@ -86,9 +87,7 @@ function CartPage() {
                             type="number"
                             min={1}
                             value={item.qty}
-                            onChange={(e) =>
-                              setQty(item.specimenId, Number(e.target.value))
-                            }
+                            onChange={(e) => setQty(item.specimenId, Number(e.target.value))}
                             className="ml-2 w-10 bg-transparent text-center text-ink-900 focus:outline-none"
                           />
                         </div>
@@ -110,9 +109,7 @@ function CartPage() {
                 <Separator />
                 <div className="flex justify-between text-sm">
                   <span className="text-ink-700">Subtotal</span>
-                  <span className="text-ink-900">
-                    {formatPrice(subtotalCents)}
-                  </span>
+                  <span className="text-ink-900">{formatPrice(subtotalCents)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-ink-700">Estimated Shipping</span>
@@ -125,16 +122,9 @@ function CartPage() {
                 <Separator />
                 <div className="flex items-baseline justify-between">
                   <span className="font-display text-2xl">Total</span>
-                  <span className="font-display text-2xl">
-                    {formatPrice(subtotalCents)}
-                  </span>
+                  <span className="font-display text-2xl">{formatPrice(subtotalCents)}</span>
                 </div>
-                <Button
-                  asChild
-                  className="w-full mt-2"
-                  size="lg"
-                  disabled={items.length === 0}
-                >
+                <Button asChild className="w-full mt-2" size="lg" disabled={items.length === 0}>
                   <Link to="/checkout">
                     PROCEED TO CHECKOUT <ArrowRightIcon className="h-4 w-4" />
                   </Link>
