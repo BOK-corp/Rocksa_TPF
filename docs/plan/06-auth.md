@@ -5,7 +5,7 @@
 - `packages/auth`:
   - `firebase.ts` initializes the client SDK from `import.meta.env`.
   - `useAuth()` hook returning `{ user, status, signIn, signUp, signOut,
-    sendReset, signInWithGoogle, signInWithApple }`.
+sendReset, signInWithGoogle, signInWithApple }`.
   - `<RequireAuth roles={[...]} />` route guard component.
   - `<RedirectIfAuthed />` for `/auth/*` pages.
 - Server-side: a tiny verifier helper that decodes the Firebase ID token and

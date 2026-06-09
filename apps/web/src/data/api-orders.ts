@@ -23,9 +23,7 @@ interface ServerOrderRow {
   createdAt: string;
 }
 
-export const createServerOrder = async (
-  input: CreateOrderInput,
-): Promise<ServerOrder | null> => {
+export const createServerOrder = async (input: CreateOrderInput): Promise<ServerOrder | null> => {
   const res = await apiOptional<{ order: ServerOrderRow }>("/v1/orders", {
     method: "POST",
     body: {

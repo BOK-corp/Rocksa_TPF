@@ -1,9 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { WorkspaceLayout } from "../../components/WorkspaceLayout.tsx";
 
 export const Route = createFileRoute("/workspace/__layout")({
-  component: RouteComponent,
+  component: WorkspaceShell,
 });
 
-function RouteComponent() {
-  return <div>Hello "/workspace/__layout"!</div>;
+function WorkspaceShell() {
+  return (
+    <WorkspaceLayout>
+      <Outlet />
+    </WorkspaceLayout>
+  );
 }

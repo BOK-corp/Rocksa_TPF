@@ -1,8 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  CategoryListing,
-  type ListingSearch,
-} from "../../../components/CategoryListing.tsx";
+import { CategoryListing, type ListingSearch } from "../../../components/CategoryListing.tsx";
 
 export const Route = createFileRoute("/c/$category/")({
   component: CategoryPage,

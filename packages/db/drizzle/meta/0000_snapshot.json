@@ -40,12 +40,8 @@
           "name": "cart_items_user_uid_users_uid_fk",
           "tableFrom": "cart_items",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
+          "columnsFrom": ["user_uid"],
+          "columnsTo": ["uid"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -53,12 +49,8 @@
           "name": "cart_items_specimen_slug_specimens_slug_fk",
           "tableFrom": "cart_items",
           "tableTo": "specimens",
-          "columnsFrom": [
-            "specimen_slug"
-          ],
-          "columnsTo": [
-            "slug"
-          ],
+          "columnsFrom": ["specimen_slug"],
+          "columnsTo": ["slug"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -66,10 +58,7 @@
       "compositePrimaryKeys": {
         "cart_items_user_uid_specimen_slug_pk": {
           "name": "cart_items_user_uid_specimen_slug_pk",
-          "columns": [
-            "user_uid",
-            "specimen_slug"
-          ]
+          "columns": ["user_uid", "specimen_slug"]
         }
       },
       "uniqueConstraints": {},
@@ -119,12 +108,8 @@
           "name": "order_items_order_id_orders_id_fk",
           "tableFrom": "order_items",
           "tableTo": "orders",
-          "columnsFrom": [
-            "order_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["order_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -132,12 +117,8 @@
           "name": "order_items_specimen_slug_specimens_slug_fk",
           "tableFrom": "order_items",
           "tableTo": "specimens",
-          "columnsFrom": [
-            "specimen_slug"
-          ],
-          "columnsTo": [
-            "slug"
-          ],
+          "columnsFrom": ["specimen_slug"],
+          "columnsTo": ["slug"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -211,12 +192,8 @@
           "name": "orders_user_uid_users_uid_fk",
           "tableFrom": "orders",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
+          "columnsFrom": ["user_uid"],
+          "columnsTo": ["uid"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }

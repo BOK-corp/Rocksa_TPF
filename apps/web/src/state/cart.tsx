@@ -47,10 +47,7 @@ const mergeItems = (a: CartItem[], b: CartItem[]): CartItem[] => {
   const byId = new Map<string, CartItem>();
   for (const it of [...a, ...b]) {
     const existing = byId.get(it.specimenId);
-    byId.set(
-      it.specimenId,
-      existing ? { ...existing, qty: existing.qty + it.qty } : { ...it },
-    );
+    byId.set(it.specimenId, existing ? { ...existing, qty: existing.qty + it.qty } : { ...it });
   }
   return [...byId.values()];
 };
@@ -103,18 +100,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [items, status, user]);
 
   const add = useCallback(
-    (specimen: Specimen, qty: number = 1) =>
-      setItems((prev) => addItemFn(prev, specimen, qty)),
+    (specimen: Specimen, qty: number = 1) => setItems((prev) => addItemFn(prev, specimen, qty)),
     [],
   );
   const setQty = useCallback(
     (id: string, qty: number) => setItems((prev) => setQtyFn(prev, id, qty)),
     [],
   );
-  const remove = useCallback(
-    (id: string) => setItems((prev) => removeItemFn(prev, id)),
-    [],
-  );
+  const remove = useCallback((id: string) => setItems((prev) => removeItemFn(prev, id)), []);
   const clear = useCallback(() => setItems([]), []);
 
   const value = useMemo<CartContextValue>(

@@ -43,9 +43,7 @@ export const ProductCard = ({ specimen, rating, variant = "rail" }: Props) => {
           {specimen.subcategory ?? specimen.category}
         </p>
         <h3 className="font-display text-lg leading-tight">{specimen.name}</h3>
-        <p className="line-clamp-2 text-xs text-ink-500">
-          {specimen.description}
-        </p>
+        <p className="line-clamp-2 text-xs text-ink-500">{specimen.description}</p>
         <div className="mt-auto flex items-end justify-between pt-3">
           <div>
             {variant === "grid" && typeof rating === "number" && (

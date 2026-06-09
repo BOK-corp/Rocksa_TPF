@@ -81,8 +81,7 @@ function Register() {
                 onChange={(e) => setAgreed(e.target.checked)}
               />
               <span>
-                I agree to the{" "}
-                <a className="text-brand-600">Terms of Service</a> and{" "}
+                I agree to the <a className="text-brand-600">Terms of Service</a> and{" "}
                 <a className="text-brand-600">Privacy Policy</a>.
               </span>
             </label>
