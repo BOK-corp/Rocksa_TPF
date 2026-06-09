@@ -1,10 +1,7 @@
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
 const randomToken = (len: number, rand: () => number = Math.random): string =>
-  Array.from(
-    { length: len },
-    () => ALPHABET[Math.floor(rand() * ALPHABET.length)]!,
-  ).join("");
+  Array.from({ length: len }, () => ALPHABET[Math.floor(rand() * ALPHABET.length)]!).join("");
 
 export const orderReference = (
   now: Date = new Date(),

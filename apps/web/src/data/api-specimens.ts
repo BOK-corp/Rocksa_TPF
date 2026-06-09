@@ -31,8 +31,7 @@ const normalize = (r: SpecimenRow): Specimen => ({
   compareAtCents: r.compareAtCents,
   stockStatus: r.stockStatus,
   originCountry: r.originCountry,
-  imageUrl:
-    r.imageUrl || gemPlaceholder(r.slug, paletteFor(r.attributes?.["Color"])),
+  imageUrl: r.imageUrl || gemPlaceholder(r.slug, paletteFor(r.attributes?.["Color"])),
   attributes: r.attributes ?? {},
 });
 
@@ -63,8 +62,7 @@ export const useSpecimen = (slug: string) =>
 export const useSpecimensByCategory = (category: string) =>
   useQuery({
     queryKey: ["specimens", category],
-    queryFn: async () =>
-      (await fetchAll()).filter((s) => s.category === category),
+    queryFn: async () => (await fetchAll()).filter((s) => s.category === category),
     staleTime: 60_000,
   });
 

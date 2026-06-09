@@ -124,10 +124,12 @@ function Checkout() {
           <section>
             <h2 className="font-display text-3xl">Delivery method</h2>
             <div className="mt-4 space-y-2">
-              {([
-                ["standard", "Standard Secure Shipping", "Free"],
-                ["express", "Express Insured Courier", "$150.00"],
-              ] as const).map(([key, label, price]) => (
+              {(
+                [
+                  ["standard", "Standard Secure Shipping", "Free"],
+                  ["express", "Express Insured Courier", "$150.00"],
+                ] as const
+              ).map(([key, label, price]) => (
                 <label
                   key={key}
                   className={
@@ -190,7 +192,10 @@ function Checkout() {
                       {Object.entries(firstSpecimen.attributes)
                         .slice(0, 2)
                         .map(([, v]) => (
-                          <span key={v} className="rounded bg-brand-50 px-1.5 py-0.5 text-brand-700">
+                          <span
+                            key={v}
+                            className="rounded bg-brand-50 px-1.5 py-0.5 text-brand-700"
+                          >
                             {v}
                           </span>
                         ))}
@@ -201,7 +206,9 @@ function Checkout() {
               )}
               <div className="flex items-center gap-2">
                 <Input placeholder="Gift card or discount code" />
-                <Button variant="secondary" size="sm">Apply</Button>
+                <Button variant="secondary" size="sm">
+                  Apply
+                </Button>
               </div>
               <Separator />
               <div className="flex justify-between text-sm">
@@ -216,9 +223,7 @@ function Checkout() {
               <div className="flex items-baseline justify-between">
                 <Label>Total</Label>
                 <p className="font-display text-3xl">
-                  <span className="text-xs uppercase tracking-wider text-ink-500 mr-2">
-                    USD
-                  </span>
+                  <span className="text-xs uppercase tracking-wider text-ink-500 mr-2">USD</span>
                   {formatPrice(subtotalCents)}
                 </p>
               </div>

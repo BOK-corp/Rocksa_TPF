@@ -39,9 +39,7 @@ function Inventory() {
                 key={t}
                 className={
                   "rounded-full px-4 py-1.5 text-sm " +
-                  (i === 0
-                    ? "bg-ink-900 text-white"
-                    : "border border-ink-700/10 text-ink-700")
+                  (i === 0 ? "bg-ink-900 text-white" : "border border-ink-700/10 text-ink-700")
                 }
               >
                 {t}
@@ -49,8 +47,7 @@ function Inventory() {
             ))}
           </div>
           <p className="text-sm text-ink-500">
-            Sort by:{" "}
-            <span className="text-ink-900">Date Added (Newest)</span>
+            Sort by: <span className="text-ink-900">Date Added (Newest)</span>
           </p>
         </div>
 
@@ -90,7 +87,7 @@ function Inventory() {
                       </Badge>
                     </td>
                     <td>{formatPrice(s.priceCents)}</td>
-                    <td className="px-6">Oct {(Number(s.id) * 3) % 28 + 1}, 2024</td>
+                    <td className="px-6">Oct {((Number(s.id) * 3) % 28) + 1}, 2024</td>
                   </tr>
                 ))}
               </tbody>

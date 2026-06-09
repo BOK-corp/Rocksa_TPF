@@ -5,8 +5,6 @@ export default {
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
-    url:
-      process.env["DATABASE_URL"] ??
-      "postgres://rocksa:rocksa@localhost:5432/rocksa",
+    url: process.env["DATABASE_URL"] ?? "postgres://rocksa:rocksa@localhost:5432/rocksa",
   },
 } satisfies Config;

@@ -59,18 +59,34 @@ function Acquisitions() {
 
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           {[
-            { label: "Active Shipments", value: "14", hint: "+2 arriving this week", icon: TruckIcon, tone: "text-brand-600" },
-            { label: "Pending Clearance", value: "3", hint: "Requires documentation", icon: VaultIcon, tone: "text-ink-500" },
-            { label: "Est. Pipeline Value", value: "$1.2M", hint: "Across 8 origins", icon: DiamondIcon, tone: "text-brand-600" },
+            {
+              label: "Active Shipments",
+              value: "14",
+              hint: "+2 arriving this week",
+              icon: TruckIcon,
+              tone: "text-brand-600",
+            },
+            {
+              label: "Pending Clearance",
+              value: "3",
+              hint: "Requires documentation",
+              icon: VaultIcon,
+              tone: "text-ink-500",
+            },
+            {
+              label: "Est. Pipeline Value",
+              value: "$1.2M",
+              hint: "Across 8 origins",
+              icon: DiamondIcon,
+              tone: "text-brand-600",
+            },
           ].map((s) => {
             const Icon = s.icon;
             return (
               <Card key={s.label}>
                 <CardBody>
                   <div className="flex items-start justify-between">
-                    <p className="text-xs uppercase tracking-wider text-ink-500">
-                      {s.label}
-                    </p>
+                    <p className="text-xs uppercase tracking-wider text-ink-500">{s.label}</p>
                     <Icon className={s.tone} />
                   </div>
                   <p className="font-display text-5xl mt-3">{s.value}</p>
@@ -143,10 +159,7 @@ function Acquisitions() {
                   ["Afghanistan, Central Asia", "Lapis Lazuli, Spinel • 1 Pending"],
                   ["Idar-Oberstein, Germany", "Cutters & Faceting • 1 Arriving"],
                 ].map(([title, sub]) => (
-                  <li
-                    key={title}
-                    className="flex items-center justify-between text-sm"
-                  >
+                  <li key={title} className="flex items-center justify-between text-sm">
                     <div>
                       <p className="font-medium">{title}</p>
                       <p className="text-xs text-ink-500">{sub}</p>
