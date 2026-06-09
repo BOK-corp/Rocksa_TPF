@@ -17,10 +17,7 @@ function Landing() {
     <div>
       <TopNav />
       <div className="flex">
-        <CategorySidebar
-          heading="The Collection"
-          subheading="Curator's Workspace"
-        />
+        <CategorySidebar heading="The Collection" subheading="Curator's Workspace" />
         <main className="flex-1 px-10 py-10">
           <section className="grid gap-6 lg:grid-cols-[1fr_320px]">
             <div className="relative overflow-hidden rounded-md bg-ink-900 text-white">
@@ -39,8 +36,8 @@ function Landing() {
                   Uruguayan Deep Purple Amethyst Geode
                 </h1>
                 <p className="text-sm mt-3 text-white/85 max-w-sm">
-                  Exceptional clarity and saturation. Museum-grade specimen
-                  recently cataloged into our central repository.
+                  Exceptional clarity and saturation. Museum-grade specimen recently cataloged into
+                  our central repository.
                 </p>
                 <Button asChild className="mt-6">
                   <Link to="/c/$category" params={{ category: "crystals" }}>
@@ -55,9 +52,8 @@ function Landing() {
                 <CardBody>
                   <h3 className="font-display text-xl">Curator's Notes</h3>
                   <p className="text-sm text-ink-500 mt-2">
-                    Recent assay confirms high silica purity and optimal
-                    crystalline structure across the latest batch of South
-                    American imports.
+                    Recent assay confirms high silica purity and optimal crystalline structure
+                    across the latest batch of South American imports.
                   </p>
                   <a className="mt-3 inline-block text-sm font-medium text-brand-600">
                     READ FULL REPORT
@@ -68,8 +64,8 @@ function Landing() {
                 <CardBody>
                   <h3 className="font-display text-xl">Investment Grade</h3>
                   <p className="text-sm text-ink-500 mt-2">
-                    Track market values and historical data for premium mineral
-                    acquisitions within your workspace.
+                    Track market values and historical data for premium mineral acquisitions within
+                    your workspace.
                   </p>
                   <a className="mt-3 inline-block text-sm font-medium text-brand-600">
                     VIEW METRICS

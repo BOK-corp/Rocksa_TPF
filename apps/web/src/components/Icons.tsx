@@ -3,11 +3,7 @@ import { cn } from "@rocksa/ui";
 
 type Props = SVGProps<SVGSVGElement>;
 
-const Svg = ({
-  className,
-  children,
-  ...rest
-}: Props & { children: ReactNode }) => (
+const Svg = ({ className, children, ...rest }: Props & { children: ReactNode }) => (
   <svg
     viewBox="0 0 24 24"
     fill="none"

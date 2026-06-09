@@ -24,7 +24,7 @@
 
 ## Payment
 
-- Stripe Elements integration *is out of scope for the first cut*. Instead
+- Stripe Elements integration _is out of scope for the first cut_. Instead
   the payment step records intent only and the order is created in
   `pending_payment` status. A `// TODO(stripe)` marks the integration point.
 

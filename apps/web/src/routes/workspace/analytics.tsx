@@ -5,8 +5,18 @@ import { WorkspaceLayout } from "../../components/WorkspaceLayout.tsx";
 export const Route = createFileRoute("/workspace/analytics")({ component: Analytics });
 
 const POINTS = [
-  [0, 80], [50, 90], [100, 88], [150, 95], [200, 110], [250, 140],
-  [300, 130], [350, 150], [400, 175], [450, 165], [500, 180], [550, 200],
+  [0, 80],
+  [50, 90],
+  [100, 88],
+  [150, 95],
+  [200, 110],
+  [250, 140],
+  [300, 130],
+  [350, 150],
+  [400, 175],
+  [450, 165],
+  [500, 180],
+  [550, 200],
 ];
 
 const DIST = [
@@ -18,9 +28,9 @@ const DIST = [
 
 function Analytics() {
   const max = Math.max(...POINTS.map(([, y]) => y!));
-  const path = POINTS
-    .map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${250 - (y! / max) * 200}`)
-    .join(" ");
+  const path = POINTS.map(
+    ([x, y], i) => `${i === 0 ? "M" : "L"}${x},${250 - (y! / max) * 200}`,
+  ).join(" ");
 
   return (
     <WorkspaceLayout>
@@ -42,8 +52,18 @@ function Analytics() {
           {[
             { label: "Total Portfolio Value", value: "$2.4M", hint: "↗ +14.2% YoY", tone: "brand" },
             { label: "Total Specimens", value: "1,842", hint: "Across 4 categories" },
-            { label: "Average Acquisition Cost", value: "$1,302", hint: "↘ -2.1% MoM", tone: "danger" },
-            { label: "Highest Valued Asset", value: "Paraiba Tourma", hint: "Est. $145,000", featured: true },
+            {
+              label: "Average Acquisition Cost",
+              value: "$1,302",
+              hint: "↘ -2.1% MoM",
+              tone: "danger",
+            },
+            {
+              label: "Highest Valued Asset",
+              value: "Paraiba Tourma",
+              hint: "Est. $145,000",
+              featured: true,
+            },
           ].map((s) => (
             <Card key={s.label} className={s.featured ? "bg-brand-600 text-white" : ""}>
               <CardBody>
@@ -55,12 +75,7 @@ function Analytics() {
                 >
                   {s.label}
                 </p>
-                <p
-                  className={
-                    "font-display mt-3 " +
-                    (s.featured ? "text-3xl" : "text-4xl")
-                  }
-                >
+                <p className={"font-display mt-3 " + (s.featured ? "text-3xl" : "text-4xl")}>
                   {s.value}
                 </p>
                 <p
@@ -104,7 +119,7 @@ function Analytics() {
                 <path d={path} stroke="rgb(109,40,217)" strokeWidth={3} fill="none" />
                 {POINTS.map(([x], i) => (
                   <text key={i} x={x ?? 0} y={258} fontSize={10} fill="#8a8499">
-                    {["Jan","","Mar","","May","","Jul","","Sep","","Nov",""][i]}
+                    {["Jan", "", "Mar", "", "May", "", "Jul", "", "Sep", "", "Nov", ""][i]}
                   </text>
                 ))}
               </svg>

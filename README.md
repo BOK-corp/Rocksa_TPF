@@ -35,15 +35,15 @@ Or work fully offline with the emulator — see [docs/plan/15-backend.md](./docs
 
 ## Scripts
 
-| Command             | What it does                          |
-| ------------------- | ------------------------------------- |
-| `bun dev`           | Run the web app                       |
-| `bun run build`     | Build every workspace package         |
-| `bun run typecheck` | Type-check every package              |
-| `bun test`          | Run Vitest                            |
-| `bun run lint`      | Oxlint                                |
-| `bun run fmt`       | oxfmt                                 |
-| `bun run seed`      | Seed specimens via Data Connect       |
+| Command             | What it does                    |
+| ------------------- | ------------------------------- |
+| `bun dev`           | Run the web app                 |
+| `bun run build`     | Build every workspace package   |
+| `bun run typecheck` | Type-check every package        |
+| `bun test`          | Run Vitest                      |
+| `bun run lint`      | Oxlint                          |
+| `bun run fmt`       | oxfmt                           |
+| `bun run seed`      | Seed specimens via Data Connect |
 
 ## Layout
 

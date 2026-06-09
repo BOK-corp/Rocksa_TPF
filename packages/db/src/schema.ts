@@ -22,13 +22,8 @@ export const specimens = pgTable(
     stockStatus: text("stock_status").notNull().default("in_stock"),
     originCountry: text("origin_country"),
     imageUrl: text("image_url").notNull().default(""),
-    attributes: jsonb("attributes")
-      .$type<Record<string, string>>()
-      .notNull()
-      .default({}),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    attributes: jsonb("attributes").$type<Record<string, string>>().notNull().default({}),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => ({
     categoryIdx: index("specimens_category_idx").on(t.category),
@@ -40,9 +35,7 @@ export const users = pgTable("users", {
   email: text("email").notNull(),
   fullName: text("full_name"),
   role: text("role").notNull().default("buyer"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const cartItems = pgTable(
@@ -55,9 +48,7 @@ export const cartItems = pgTable(
       .notNull()
       .references(() => specimens.slug, { onDelete: "cascade" }),
     qty: integer("qty").notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => ({
     pk: primaryKey({ columns: [t.userUid, t.specimenSlug] }),
@@ -74,9 +65,7 @@ export const orders = pgTable("orders", {
   subtotalCents: integer("subtotal_cents").notNull(),
   shippingCents: integer("shipping_cents").notNull().default(0),
   totalCents: integer("total_cents").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const orderItems = pgTable("order_items", {

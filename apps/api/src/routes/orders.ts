@@ -52,9 +52,7 @@ ordersRouter.post("/", async (c) => {
   const order = inserted[0]!;
 
   if (lines.length > 0) {
-    await db
-      .insert(orderItems)
-      .values(lines.map((l) => ({ orderId: order.id, ...l })));
+    await db.insert(orderItems).values(lines.map((l) => ({ orderId: order.id, ...l })));
   }
   return c.json({ order });
 });
@@ -68,10 +66,7 @@ ordersRouter.get("/:id", async (c) => {
     .where(and(eq(orders.id, id), eq(orders.userUid, user.uid)))
     .limit(1);
   if (!row[0]) return c.json({ error: "not found" }, 404);
-  const items = await db
-    .select()
-    .from(orderItems)
-    .where(eq(orderItems.orderId, id));
+  const items = await db.select().from(orderItems).where(eq(orderItems.orderId, id));
   return c.json({ order: row[0], items });
 });
 

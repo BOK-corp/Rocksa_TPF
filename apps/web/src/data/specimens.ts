@@ -23,8 +23,7 @@ export const SPECIMENS: Specimen[] = [
     compareAtCents: null,
     stockStatus: "in_stock",
     originCountry: "Switzerland",
-    imageUrl:
-      "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=600&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=600&q=80",
     attributes: {
       Color: "Clear",
       Clarity: "VVS",
@@ -44,8 +43,7 @@ export const SPECIMENS: Specimen[] = [
     compareAtCents: null,
     stockStatus: "in_stock",
     originCountry: "Uruguay",
-    imageUrl:
-      "https://images.unsplash.com/photo-1518930259200-3e5b85f0a0e7?w=600&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1518930259200-3e5b85f0a0e7?w=600&q=80",
     attributes: { Color: "Purple", Clarity: "VS", Carat: "1,240" },
   }),
   make({
@@ -60,8 +58,7 @@ export const SPECIMENS: Specimen[] = [
     compareAtCents: null,
     stockStatus: "in_stock",
     originCountry: "Pakistan",
-    imageUrl:
-      "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=600&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=600&q=80",
     attributes: { Color: "Blue", Clarity: "VVS", Carat: "412" },
   }),
   make({
@@ -76,8 +73,7 @@ export const SPECIMENS: Specimen[] = [
     compareAtCents: 14_000_00,
     stockStatus: "in_stock",
     originCountry: "Sri Lanka",
-    imageUrl:
-      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=80",
     attributes: {
       Weight: "2.50 ct",
       Cut: "Oval Mixed",
@@ -101,8 +97,7 @@ export const SPECIMENS: Specimen[] = [
     compareAtCents: null,
     stockStatus: "in_stock",
     originCountry: "DR Congo",
-    imageUrl:
-      "https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=600&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=600&q=80",
     attributes: { Color: "Green", "Specific Gravity": "3.80" },
   }),
   make({
@@ -117,8 +112,7 @@ export const SPECIMENS: Specimen[] = [
     compareAtCents: null,
     stockStatus: "low_stock",
     originCountry: "Germany",
-    imageUrl:
-      "https://images.unsplash.com/photo-1606293459247-fa6f25edbabc?w=600&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1606293459247-fa6f25edbabc?w=600&q=80",
     attributes: { Color: "Iridescent", Origin: "Synthetic" },
   }),
   make({
@@ -133,8 +127,7 @@ export const SPECIMENS: Specimen[] = [
     compareAtCents: null,
     stockStatus: "in_stock",
     originCountry: "USA",
-    imageUrl:
-      "https://images.unsplash.com/photo-1612886623429-b1a7df7e0cef?w=600&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1612886623429-b1a7df7e0cef?w=600&q=80",
     attributes: { Color: "Green", Clarity: "VS", Hardness: "4 (Mohs)" },
   }),
   make({
@@ -148,8 +141,7 @@ export const SPECIMENS: Specimen[] = [
     compareAtCents: null,
     stockStatus: "in_stock",
     originCountry: "Mexico",
-    imageUrl:
-      "https://images.unsplash.com/photo-1604332482225-89c9ae5cce30?w=600&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1604332482225-89c9ae5cce30?w=600&q=80",
     attributes: { Color: "Black", Hardness: "5.5 (Mohs)" },
   }),
   make({
@@ -163,8 +155,7 @@ export const SPECIMENS: Specimen[] = [
     compareAtCents: null,
     stockStatus: "on_display",
     originCountry: "Uruguay",
-    imageUrl:
-      "https://images.unsplash.com/photo-1551845041-63e8e76836ea?w=600&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1551845041-63e8e76836ea?w=600&q=80",
     attributes: { Color: "Purple", Clarity: "VS" },
   }),
   make({
@@ -178,8 +169,7 @@ export const SPECIMENS: Specimen[] = [
     compareAtCents: null,
     stockStatus: "in_stock",
     originCountry: "Afghanistan",
-    imageUrl:
-      "https://images.unsplash.com/photo-1559664032-2c2bbf6b53ec?w=600&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1559664032-2c2bbf6b53ec?w=600&q=80",
     attributes: { Color: "Blue", Hardness: "5.5 (Mohs)" },
   }),
 ];
