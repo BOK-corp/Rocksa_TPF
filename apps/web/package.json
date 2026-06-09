@@ -1,11 +1,11 @@
 {
   "name": "@rocksa/web",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "vite build && tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview"
   },
@@ -21,8 +21,8 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0-beta.6",
-    "@tanstack/router-plugin": "^1.78.0",
     "@tanstack/router-devtools": "^1.78.0",
+    "@tanstack/router-plugin": "^1.78.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
