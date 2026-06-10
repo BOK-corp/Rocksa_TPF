@@ -22,8 +22,7 @@ import {
 } from "../../../../components/Icons.tsx";
 import { CategoryListing } from "../../../../components/CategoryListing.tsx";
 import { TopNav } from "../../../../components/TopNav.tsx";
-import { useCart } from "../../../../state/cart.tsx";
-import { restoreListingScroll } from "../../../../lib/listing-scroll.ts";
+import { useCart } from "@rocksa/cart";
 
 interface Search {
   modal?: boolean;

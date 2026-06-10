@@ -36,6 +36,7 @@
       "dependencies": {
         "@hookform/resolvers": "^5.0.1",
         "@rocksa/auth": "workspace:*",
+        "@rocksa/cart": "workspace:*",
         "@rocksa/domain": "workspace:*",
         "@rocksa/ui": "workspace:*",
         "@tanstack/react-query": "^5.59.20",
@@ -70,6 +71,17 @@
       },
       "peerDependencies": {
         "@tanstack/react-router": "^1.78.0",
+        "react": "^19.0.0",
+      },
+    },
+    "packages/cart": {
+      "name": "@rocksa/cart",
+      "version": "0.0.0",
+      "dependencies": {
+        "@rocksa/auth": "workspace:*",
+        "@rocksa/domain": "workspace:*",
+      },
+      "peerDependencies": {
         "react": "^19.0.0",
       },
     },
@@ -468,6 +480,8 @@
     "@rocksa/api": ["@rocksa/api@workspace:apps/api"],
 
     "@rocksa/auth": ["@rocksa/auth@workspace:packages/auth"],
+
+    "@rocksa/cart": ["@rocksa/cart@workspace:packages/cart"],
 
     "@rocksa/config": ["@rocksa/config@workspace:packages/config"],
 

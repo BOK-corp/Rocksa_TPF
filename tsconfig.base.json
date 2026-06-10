@@ -28,7 +28,9 @@
       "@rocksa/db": ["packages/db/src/index.ts"],
       "@rocksa/db/*": ["packages/db/src/*"],
       "@rocksa/domain": ["packages/domain/src/index.ts"],
-      "@rocksa/domain/*": ["packages/domain/src/*"]
+      "@rocksa/domain/*": ["packages/domain/src/*"],
+      "@rocksa/cart": ["packages/cart/src/index.ts"],
+      "@rocksa/cart/*": ["packages/cart/src/*"]
     }
   }
 }

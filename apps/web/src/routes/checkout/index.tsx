@@ -4,17 +4,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input } from "@rocksa/ui";
 import { TopNav } from "../../components/TopNav.tsx";
-import { CheckoutStepper } from "../../components/checkout/CheckoutStepper.tsx";
-import { OrderSummary } from "../../components/checkout/OrderSummary.tsx";
-import {
-  checkoutInfoSchema,
-  type CheckoutInfoForm,
-} from "../../components/checkout/checkout-schemas.ts";
-import {
-  readStoredCartItems,
-  writeStoredCheckoutInfo,
-} from "../../lib/checkout-storage.ts";
-import { useCart } from "../../state/cart.tsx";
+import { useCart } from "@rocksa/cart";
 import { useOrder } from "../../state/order.tsx";
 
 export const Route = createFileRoute("/checkout/")({
@@ -27,7 +17,7 @@ export const Route = createFileRoute("/checkout/")({
 });
 
 function Checkout() {
-  const { items } = useCart();
+  const { items, subtotal } = useCart();
   const { info, setInfo } = useOrder();
   const navigate = useNavigate();
 
@@ -222,7 +212,61 @@ function Checkout() {
         </form>
 
         <aside>
-          <OrderSummary items={items} info={{ ...info, delivery }} />
+          <Card>
+            <CardBody className="space-y-4">
+              <h2 className="font-display text-2xl">Order Summary</h2>
+              {firstSpecimen && (
+                <div className="flex gap-3">
+                  <div className="relative h-16 w-16 overflow-hidden rounded-md bg-surface-soft">
+                    <img
+                      src={firstSpecimen.imageUrl}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-ink-900 text-[10px] text-white">
+                      {firstItem?.qty}
+                    </span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium">{firstSpecimen.name}</p>
+                    <div className="mt-1 flex gap-2 text-xs">
+                      {Object.entries(firstSpecimen.attributes)
+                        .slice(0, 2)
+                        .map(([, v]) => (
+                          <span key={v} className="rounded bg-brand-50 px-1.5 py-0.5 text-brand-700">
+                            {v}
+                          </span>
+                        ))}
+                    </div>
+                  </div>
+                  <p className="text-sm">{formatPrice(firstItem!.unitPriceCents)}</p>
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <Input placeholder="Gift card or discount code" />
+                <Button variant="secondary" size="sm">Apply</Button>
+              </div>
+              <Separator />
+              <div className="flex justify-between text-sm">
+                <span>Subtotal</span>
+                <span>{formatPrice(subtotal)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span>Shipping</span>
+                <span className="text-ink-500">Calculated at next step</span>
+              </div>
+              <Separator />
+              <div className="flex items-baseline justify-between">
+                <Label>Total</Label>
+                <p className="font-display text-3xl">
+                  <span className="text-xs uppercase tracking-wider text-ink-500 mr-2">
+                    USD
+                  </span>
+                  {formatPrice(subtotal)}
+                </p>
+              </div>
+            </CardBody>
+          </Card>
         </aside>
       </main>
     </div>
