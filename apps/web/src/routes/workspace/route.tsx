@@ -1,5 +1,11 @@
-import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
+import {
+  Outlet,
+  createFileRoute,
+  redirect,
+  useRouterState,
+} from "@tanstack/react-router";
 import { RequireAuth } from "@rocksa/auth";
+import { WorkspaceLayout } from "../../components/WorkspaceLayout.tsx";
 
 export const Route = createFileRoute("/workspace")({
   beforeLoad: ({ context }) => {
@@ -13,9 +19,22 @@ export const Route = createFileRoute("/workspace")({
       throw redirect({ to: "/" });
     }
   },
-  component: () => (
-    <RequireAuth roles={["curator", "admin"]}>
-      <Outlet />
-    </RequireAuth>
-  ),
+  component: WorkspaceRoot,
 });
+
+function WorkspaceRoot() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isWelcome = pathname === "/workspace" || pathname === "/workspace/";
+
+  return (
+    <RequireAuth roles={["curator", "admin"]}>
+      {isWelcome ? (
+        <Outlet />
+      ) : (
+        <WorkspaceLayout>
+          <Outlet />
+        </WorkspaceLayout>
+      )}
+    </RequireAuth>
+  );
+}

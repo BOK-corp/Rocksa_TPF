@@ -5,6 +5,7 @@ export * from "./Label.tsx";
 export * from "./Card.tsx";
 export * from "./Badge.tsx";
 export * from "./Dialog.tsx";
+export * from "./Sheet.tsx";
 export * from "./Tabs.tsx";
 export * from "./Checkbox.tsx";
 export * from "./Separator.tsx";

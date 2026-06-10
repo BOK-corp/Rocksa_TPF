@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button, Card, CardBody } from "@rocksa/ui";
+import { WorkspacePageHeader } from "../../components/WorkspacePageHeader.tsx";
 
 export const Route = createFileRoute("/workspace/analytics")({ component: Analytics });
 
@@ -32,19 +33,17 @@ function Analytics() {
   ).join(" ");
 
   return (
-    <div className="p-10">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="font-display text-5xl">Performance Analytics</h1>
-          <p className="text-ink-500 mt-1">
-            Insights and valuation metrics for your curated collection.
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="secondary">Export Report</Button>
-          <Button>📅 Last 12 Months</Button>
-        </div>
-      </div>
+    <div className="p-6 md:p-10">
+      <WorkspacePageHeader
+        title="Performance Analytics"
+        subtitle="Insights and valuation metrics for your curated collection."
+        action={
+          <div className="flex flex-wrap gap-2">
+            <Button variant="secondary">Export Report</Button>
+            <Button>📅 Last 12 Months</Button>
+          </div>
+        }
+      />
 
       <div className="mt-8 grid gap-4 md:grid-cols-4">
         {[

@@ -18,8 +18,8 @@ export const bearerToken = (header: string | undefined): string | null => {
 };
 
 const toAuthUser = (row: typeof users.$inferSelect): AuthUser => ({
-  id: row.id,
-  uid: row.firebaseUid,
+  id: row.uid,
+  uid: row.uid,
   email: row.email,
   role: row.role,
   fullName: row.fullName,
@@ -34,14 +34,14 @@ export const upsertUser = async (
   const existing = await db
     .select()
     .from(users)
-    .where(eq(users.firebaseUid, firebaseUid))
+    .where(eq(users.uid, firebaseUid))
     .limit(1);
   if (existing[0]) return toAuthUser(existing[0]);
 
   const inserted = await db
     .insert(users)
     .values({
-      firebaseUid,
+      uid: firebaseUid,
       email,
       fullName: name,
       role: role ?? "buyer",
@@ -54,7 +54,7 @@ export const loadUser = async (firebaseUid: string): Promise<AuthUser | null> =>
   const row = await db
     .select()
     .from(users)
-    .where(eq(users.firebaseUid, firebaseUid))
+    .where(eq(users.uid, firebaseUid))
     .limit(1);
   return row[0] ? toAuthUser(row[0]) : null;
 };
@@ -69,5 +69,15 @@ export const requireAuth: MiddlewareHandler<{
   const user = await loadUser(decoded.uid);
   if (!user) return c.json({ error: "session not bootstrapped" }, 401);
   c.set("user", user);
+  await next();
+};
+
+export const requireCurator: MiddlewareHandler<{
+  Variables: { user: AuthUser };
+}> = async (c, next) => {
+  const user = c.get("user");
+  if (!["curator", "admin"].includes(user.role)) {
+    return c.json({ error: "forbidden" }, 403);
+  }
   await next();
 };

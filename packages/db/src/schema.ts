@@ -10,8 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  firebaseUid: text("firebase_uid").notNull().unique(),
+  uid: text("uid").primaryKey(),
   email: text("email").notNull(),
   fullName: text("full_name"),
   role: text("role").notNull().default("buyer"),
@@ -23,8 +22,7 @@ export const users = pgTable("users", {
 export const specimens = pgTable(
   "specimens",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
-    slug: text("slug").notNull().unique(),
+    slug: text("slug").primaryKey(),
     name: text("name").notNull(),
     category: text("category").notNull(),
     subcategory: text("subcategory"),
@@ -34,6 +32,10 @@ export const specimens = pgTable(
     stockStatus: text("stock_status").notNull().default("in_stock"),
     originCountry: text("origin_country"),
     imageUrl: text("image_url").notNull().default(""),
+    attributes: jsonb("attributes")
+      .$type<Record<string, string>>()
+      .notNull()
+      .default({}),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -43,83 +45,50 @@ export const specimens = pgTable(
   }),
 );
 
-export const users = pgTable("users", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  firebaseUid: text("firebase_uid").notNull().unique(),
-  email: text("email").notNull(),
-  fullName: text("full_name"),
-  role: text("role").notNull().default("buyer"),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-});
-
 export const cartItems = pgTable(
   "cart_items",
   {
-    userId: uuid("user_id")
+    userUid: text("user_uid")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => users.uid, { onDelete: "cascade" }),
     specimenSlug: text("specimen_slug")
       .notNull()
-      .references(() => specimens.id, { onDelete: "cascade" }),
+      .references(() => specimens.slug, { onDelete: "cascade" }),
     qty: integer("qty").notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
   },
   (t) => ({
-    pk: primaryKey({ columns: [t.userId, t.specimenSlug] }),
+    pk: primaryKey({ columns: [t.userUid, t.specimenSlug] }),
   }),
 );
 
 export const orders = pgTable("orders", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
+  userUid: text("user_uid")
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => users.uid, { onDelete: "cascade" }),
   reference: text("reference").notNull(),
   status: text("status").notNull().default("pending_payment"),
   subtotalCents: integer("subtotal_cents").notNull(),
   shippingCents: integer("shipping_cents").notNull().default(0),
   totalCents: integer("total_cents").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
-export const orderItems = pgTable(
-  "order_items",
-  {
-    orderId: uuid("order_id")
-      .notNull()
-      .references(() => orders.id, { onDelete: "cascade" }),
-    specimenId: uuid("specimen_id")
-      .notNull()
-      .references(() => specimens.id, { onDelete: "cascade" }),
-    qty: integer("qty").notNull(),
-    unitPriceCents: integer("unit_price_cents").notNull(),
-    snapshotJson: jsonb("snapshot_json")
-      .$type<Record<string, unknown>>()
-      .notNull(),
-  },
-  (t) => ({
-    pk: primaryKey({ columns: [t.orderId, t.specimenId] }),
-  }),
-);
-
-export const addresses = pgTable("addresses", {
+export const orderItems = pgTable("order_items", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
+  orderId: uuid("order_id")
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  country: text("country").notNull(),
-  firstName: text("first_name").notNull(),
-  lastName: text("last_name").notNull(),
-  line1: text("line_1").notNull(),
-  line2: text("line_2"),
-  city: text("city").notNull(),
-  postal: text("postal").notNull(),
-  phone: text("phone"),
-  kind: text("kind").notNull().default("shipping"),
+    .references(() => orders.id, { onDelete: "cascade" }),
+  specimenSlug: text("specimen_slug")
+    .notNull()
+    .references(() => specimens.slug, { onDelete: "cascade" }),
+  qty: integer("qty").notNull(),
+  unitPriceCents: integer("unit_price_cents").notNull(),
 });
 
 export const shipments = pgTable("shipments", {
@@ -127,24 +96,22 @@ export const shipments = pgTable("shipments", {
   orderId: uuid("order_id")
     .notNull()
     .references(() => orders.id, { onDelete: "cascade" }),
+  specimenSlug: text("specimen_slug")
+    .notNull()
+    .references(() => specimens.slug, { onDelete: "cascade" }),
   origin: text("origin"),
-  status: text("status").notNull().default("pending"),
+  status: text("status").notNull().default("in_transit"),
   eta: timestamp("eta", { withTimezone: true }),
-});
-
-export const reports = pgTable("reports", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  kind: text("kind").notNull(),
-  title: text("title").notNull(),
-  generatedAt: timestamp("generated_at", { withTimezone: true })
+  createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
-  fileUrl: text("file_url"),
 });
 
 export const auditLog = pgTable("audit_log", {
   id: uuid("id").primaryKey().defaultRandom(),
-  actorId: uuid("actor_id").references(() => users.id, { onDelete: "set null" }),
+  actorUid: text("actor_uid").references(() => users.uid, {
+    onDelete: "set null",
+  }),
   action: text("action").notNull(),
   target: text("target"),
   payloadJson: jsonb("payload_json").$type<Record<string, unknown>>(),

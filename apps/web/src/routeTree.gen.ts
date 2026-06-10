@@ -21,7 +21,6 @@ import { Route as WorkspaceOverviewRouteImport } from './routes/workspace/overvi
 import { Route as WorkspaceInventoryRouteImport } from './routes/workspace/inventory'
 import { Route as WorkspaceAnalyticsRouteImport } from './routes/workspace/analytics'
 import { Route as WorkspaceAcquisitionsRouteImport } from './routes/workspace/acquisitions'
-import { Route as Workspace_layoutRouteImport } from './routes/workspace/__layout'
 import { Route as OrdersOrderIdRouteImport } from './routes/orders/$orderId'
 import { Route as CheckoutReviewRouteImport } from './routes/checkout/review'
 import { Route as CheckoutPaymentRouteImport } from './routes/checkout/payment'
@@ -90,10 +89,6 @@ const WorkspaceAnalyticsRoute = WorkspaceAnalyticsRouteImport.update({
 const WorkspaceAcquisitionsRoute = WorkspaceAcquisitionsRouteImport.update({
   id: '/acquisitions',
   path: '/acquisitions',
-  getParentRoute: () => WorkspaceRouteRoute,
-} as any)
-const Workspace_layoutRoute = Workspace_layoutRouteImport.update({
-  id: '/__layout',
   getParentRoute: () => WorkspaceRouteRoute,
 } as any)
 const OrdersOrderIdRoute = OrdersOrderIdRouteImport.update({
@@ -176,7 +171,6 @@ export interface FileRoutesByTo {
   '/checkout/payment': typeof CheckoutPaymentRoute
   '/checkout/review': typeof CheckoutReviewRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
-  '/workspace': typeof WorkspaceIndexRoute
   '/workspace/acquisitions': typeof WorkspaceAcquisitionsRoute
   '/workspace/analytics': typeof WorkspaceAnalyticsRoute
   '/workspace/inventory': typeof WorkspaceInventoryRoute
@@ -184,6 +178,7 @@ export interface FileRoutesByTo {
   '/workspace/reports': typeof WorkspaceReportsRoute
   '/checkout': typeof CheckoutIndexRoute
   '/orders': typeof OrdersIndexRoute
+  '/workspace': typeof WorkspaceIndexRoute
   '/c/$category': typeof CCategoryIndexRoute
   '/c/$category/p/$slug': typeof CCategoryPSlugRoute
 }
@@ -200,7 +195,6 @@ export interface FileRoutesById {
   '/checkout/payment': typeof CheckoutPaymentRoute
   '/checkout/review': typeof CheckoutReviewRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
-  '/workspace/__layout': typeof Workspace_layoutRoute
   '/workspace/acquisitions': typeof WorkspaceAcquisitionsRoute
   '/workspace/analytics': typeof WorkspaceAnalyticsRoute
   '/workspace/inventory': typeof WorkspaceInventoryRoute
@@ -248,7 +242,6 @@ export interface FileRouteTypes {
     | '/checkout/payment'
     | '/checkout/review'
     | '/orders/$orderId'
-    | '/workspace'
     | '/workspace/acquisitions'
     | '/workspace/analytics'
     | '/workspace/inventory'
@@ -256,6 +249,7 @@ export interface FileRouteTypes {
     | '/workspace/reports'
     | '/checkout'
     | '/orders'
+    | '/workspace'
     | '/c/$category'
     | '/c/$category/p/$slug'
   id:
@@ -271,7 +265,6 @@ export interface FileRouteTypes {
     | '/checkout/payment'
     | '/checkout/review'
     | '/orders/$orderId'
-    | '/workspace/__layout'
     | '/workspace/acquisitions'
     | '/workspace/analytics'
     | '/workspace/inventory'
@@ -385,13 +378,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceAcquisitionsRouteImport
       parentRoute: typeof WorkspaceRouteRoute
     }
-    '/workspace/__layout': {
-      id: '/workspace/__layout'
-      path: ''
-      fullPath: '/workspace'
-      preLoaderRoute: typeof Workspace_layoutRouteImport
-      parentRoute: typeof WorkspaceRouteRoute
-    }
     '/orders/$orderId': {
       id: '/orders/$orderId'
       path: '/orders/$orderId'
@@ -475,7 +461,6 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 )
 
 interface WorkspaceRouteRouteChildren {
-  Workspace_layoutRoute: typeof Workspace_layoutRoute
   WorkspaceAcquisitionsRoute: typeof WorkspaceAcquisitionsRoute
   WorkspaceAnalyticsRoute: typeof WorkspaceAnalyticsRoute
   WorkspaceInventoryRoute: typeof WorkspaceInventoryRoute
@@ -485,7 +470,6 @@ interface WorkspaceRouteRouteChildren {
 }
 
 const WorkspaceRouteRouteChildren: WorkspaceRouteRouteChildren = {
-  Workspace_layoutRoute: Workspace_layoutRoute,
   WorkspaceAcquisitionsRoute: WorkspaceAcquisitionsRoute,
   WorkspaceAnalyticsRoute: WorkspaceAnalyticsRoute,
   WorkspaceInventoryRoute: WorkspaceInventoryRoute,

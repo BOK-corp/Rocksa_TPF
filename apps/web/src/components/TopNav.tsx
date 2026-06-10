@@ -1,11 +1,13 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Avatar, Button, Input } from "@rocksa/ui";
 import { useAuth } from "@rocksa/auth";
-import { BellIcon, CartIcon, HelpIcon, SearchIcon } from "./Icons.tsx";
-import { useCartCount } from "@rocksa/cart";
+import { BellIcon, CartIcon, HelpIcon, MenuIcon, SearchIcon } from "./Icons.tsx";
+import { useCart } from "../state/cart.tsx";
 
 interface Props {
   variant?: "full" | "minimal";
+  showMenuButton?: boolean;
+  onMenuClick?: () => void;
 }
 
 const initials = (name: string | null | undefined): string => {
@@ -19,8 +21,12 @@ const initials = (name: string | null | undefined): string => {
   );
 };
 
-export const TopNav = ({ variant = "full" }: Props) => {
-  const count = useCartCount();
+export const TopNav = ({
+  variant = "full",
+  showMenuButton = false,
+  onMenuClick,
+}: Props) => {
+  const { count } = useCart();
   const { user, status, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -44,12 +50,22 @@ export const TopNav = ({ variant = "full" }: Props) => {
 
   return (
     <header className="border-b border-ink-700/5 bg-surface-muted">
-      <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-6 px-6">
+      <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 md:gap-6 md:px-6">
+        {showMenuButton && (
+          <button
+            type="button"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-brand-600 hover:bg-brand-50 md:hidden"
+            aria-label="Open navigation menu"
+            onClick={onMenuClick}
+          >
+            <MenuIcon />
+          </button>
+        )}
         <Link to="/" className="font-display text-2xl text-brand-600">
           Rocksa
         </Link>
 
-        <div className="relative flex-1 max-w-xl mx-auto">
+        <div className="relative mx-auto hidden max-w-xl flex-1 md:block">
           <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
           <Input placeholder="Search collection…" className="pl-10 bg-white/80 border-ink-700/5" />
         </div>
