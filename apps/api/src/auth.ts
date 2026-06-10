@@ -5,6 +5,7 @@ import { users } from "@rocksa/db/schema";
 import { verifyIdToken } from "./firebase.ts";
 
 export interface AuthUser {
+  id: string;
   uid: string;
   email: string;
   role: string;
@@ -18,21 +19,22 @@ export const upsertUser = async (
   const existing = await db
     .select()
     .from(users)
-    .where(eq(users.uid, uid))
+    .where(eq(users.firebaseUid, uid))
     .limit(1);
   if (existing[0]) {
     return {
-      uid: existing[0].uid,
+      id: existing[0].id,
+      uid,
       email: existing[0].email,
       role: existing[0].role,
     };
   }
   const inserted = await db
     .insert(users)
-    .values({ uid, email, fullName: name })
+    .values({ firebaseUid: uid, email, fullName: name })
     .returning();
   const row = inserted[0]!;
-  return { uid: row.uid, email: row.email, role: row.role };
+  return { id: row.id, uid, email: row.email, role: row.role };
 };
 
 export const requireAuth: MiddlewareHandler<{

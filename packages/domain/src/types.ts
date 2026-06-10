@@ -9,6 +9,7 @@ export type OrderStatus =
   | "cancelled";
 
 export type ShipmentStatus =
+  | "pending"
   | "in_transit"
   | "pending_customs"
   | "customs_hold"

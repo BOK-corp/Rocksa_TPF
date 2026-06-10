@@ -5,6 +5,7 @@ import { SPECIMENS } from "./specimens.ts";
 import { gemPlaceholder, paletteFor } from "./placeholder.ts";
 
 interface SpecimenRow {
+  id: string;
   slug: string;
   name: string;
   category: Specimen["category"];
@@ -20,8 +21,7 @@ interface SpecimenRow {
 }
 
 const normalize = (r: SpecimenRow): Specimen => ({
-  // id === slug so the rest of the SPA (cart lookups) keeps working.
-  id: r.slug,
+  id: r.id,
   slug: r.slug,
   name: r.name,
   category: r.category,

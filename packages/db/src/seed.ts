@@ -1,9 +1,11 @@
 import { db, sql } from "./client.ts";
-import { specimens } from "./schema.ts";
+import { specimenAttrs, specimens } from "./schema.ts";
 
-type Seed = typeof specimens.$inferInsert;
+type SeedRow = typeof specimens.$inferInsert & {
+  attributes: Record<string, string>;
+};
 
-const DEMO: Seed[] = [
+const DEMO: SeedRow[] = [
   { slug: "clear-quartz-cluster", name: "Clear Quartz Cluster", category: "crystals", subcategory: "Quartz", description: "High-clarity specimen from the Swiss Alps, featuring multiple termination points.", priceCents: 14_500_00, originCountry: "Switzerland", imageUrl: "", attributes: { Color: "Clear", Clarity: "VVS", Carat: "85.00" } },
   { slug: "amethyst-geode-slice", name: "Amethyst Geode Slice", category: "crystals", subcategory: "Quartz", description: "Deep purple coloration with a distinct agate banding edge.", priceCents: 35_000_00, originCountry: "Uruguay", imageUrl: "", attributes: { Color: "Purple", Clarity: "VS", Carat: "1,240" } },
   { slug: "raw-aquamarine", name: "Raw Aquamarine", category: "crystals", subcategory: "Beryl", description: "Gem-quality Beryl crystal showing excellent natural hexagonal form.", priceCents: 85_000_00, originCountry: "Pakistan", imageUrl: "", attributes: { Color: "Blue", Clarity: "VVS", Carat: "412" } },
@@ -29,9 +31,28 @@ const DEMO: Seed[] = [
   { slug: "trilobite-plate", name: "Trilobite Plate", category: "sedimentary", description: "Moroccan trilobite plate, articulated specimen on natural matrix.", priceCents: 1_400_00, originCountry: "Morocco", imageUrl: "", attributes: { Color: "Black" } },
   { slug: "banded-iron-formation", name: "Banded Iron Formation", category: "sedimentary", description: "Polished BIF slab, alternating hematite and chert bands.", priceCents: 1_150_00, originCountry: "Australia", imageUrl: "", attributes: { Color: "Black" } },
   { slug: "petrified-wood-round", name: "Petrified Wood Round", category: "sedimentary", description: "Arizona petrified wood round, fully agatized cell structure.", priceCents: 2_750_00, originCountry: "USA", imageUrl: "", attributes: { Color: "Iridescent" } },
+  { slug: "moonstone-oval", name: "Moonstone Oval", category: "crystals", subcategory: "Feldspar", description: "Adularescent feldspar cabochon with a soft blue sheen.", priceCents: 4_500_00, originCountry: "India", imageUrl: "", attributes: { Color: "White", Clarity: "VS", Treatment: "None" } },
+  { slug: "red-garnet-suite", name: "Red Garnet Suite", category: "crystals", subcategory: "Garnet", description: "Vivid almandine garnet crystals with excellent saturation.", priceCents: 7_200_00, originCountry: "India", imageUrl: "", attributes: { Color: "Red", Hardness: "7.5 (Mohs)" } },
+  { slug: "andesite-boulder", name: "Andesite Boulder", category: "igneous", description: "Fine-grained volcanic boulder with layered flow banding.", priceCents: 1_650_00, originCountry: "Chile", imageUrl: "", attributes: { Color: "Gray", Texture: "Fine-grained" } },
+  { slug: "serpentine-carving", name: "Serpentine Carving", category: "metamorphic", description: "Soft green serpentinite carving with silky polish.", priceCents: 3_300_00, originCountry: "Afghanistan", imageUrl: "", attributes: { Color: "Green", Hardness: "3.5 (Mohs)" } },
+  { slug: "fossilized-wood-slab", name: "Fossilized Wood Slab", category: "sedimentary", description: "Cross-section slab preserving mineralized wood grain and texture.", priceCents: 2_400_00, originCountry: "USA", imageUrl: "", attributes: { Color: "Brown", Origin: "Petrified" } },
 ];
 
+await db.delete(specimenAttrs);
 await db.delete(specimens);
-await db.insert(specimens).values(DEMO);
+
+for (const { attributes, ...row } of DEMO) {
+  const inserted = await db.insert(specimens).values(row).returning();
+  const specimen = inserted[0]!;
+  const attrRows = Object.entries(attributes).map(([key, value]) => ({
+    specimenId: specimen.id,
+    key,
+    value,
+  }));
+  if (attrRows.length > 0) {
+    await db.insert(specimenAttrs).values(attrRows);
+  }
+}
+
 await sql.end();
 console.log(`✓ seeded ${DEMO.length} specimens`);
