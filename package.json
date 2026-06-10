@@ -12,7 +12,9 @@
     "build": "bun --filter='@rocksa/*' run build",
     "typecheck": "bun --filter='@rocksa/*' run typecheck",
     "test": "vitest run",
+    "test:auth": "vitest run packages/auth/src/auth.e2e.test.ts",
     "test:watch": "vitest",
+    "emulators:auth": "firebase emulators:start --only auth",
     "lint": "oxlint .",
     "fmt": "oxfmt .",
     "fmt:check": "oxfmt --check ."

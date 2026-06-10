@@ -24,7 +24,7 @@ function Register() {
     }
     setBusy(true);
     try {
-      await auth.signUp(email, password, fullName);
+      await auth.signUp(email, password, fullName, { role: "curator" });
       navigate({ to: "/workspace/overview" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Sign-up failed");

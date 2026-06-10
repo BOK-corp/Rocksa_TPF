@@ -41,7 +41,7 @@ ordersRouter.post("/", async (c) => {
   const inserted = await db
     .insert(orders)
     .values({
-      userUid: user.uid,
+      userId: user.id,
       reference: orderReference(),
       status: "pending_payment",
       subtotalCents: subtotal,
@@ -65,7 +65,7 @@ ordersRouter.get("/:id", async (c) => {
   const row = await db
     .select()
     .from(orders)
-    .where(and(eq(orders.id, id), eq(orders.userUid, user.uid)))
+    .where(and(eq(orders.id, id), eq(orders.userId, user.id)))
     .limit(1);
   if (!row[0]) return c.json({ error: "not found" }, 404);
   const items = await db
@@ -80,7 +80,7 @@ ordersRouter.get("/", async (c) => {
   const rows = await db
     .select()
     .from(orders)
-    .where(eq(orders.userUid, user.uid))
+    .where(eq(orders.userId, user.id))
     .orderBy(desc(orders.createdAt));
   return c.json({ orders: rows });
 });
