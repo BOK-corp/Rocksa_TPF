@@ -56,6 +56,8 @@ jobs:
 
       - name: Start API
         run: bun run api &
+        env:
+          FIREBASE_AUTH_EMULATOR_HOST: "127.0.0.1:9099"
 
       - name: Wait for services
         run: npx wait-on tcp:9099 tcp:8787 --timeout 30000
