@@ -2,6 +2,8 @@
   --color-brand-50: #f5f3ff;
   --color-brand-100: #ede9fe;
   --color-brand-200: #ddd6fe;
+  --color-brand-300: #c4b5fd;
+  --color-brand-400: #a78bfa;
   --color-brand-500: #7c3aed;
   --color-brand-600: #6d28d9;
   --color-brand-700: #5b21b6;
@@ -9,6 +11,11 @@
   --color-surface: #ffffff;
   --color-surface-muted: #faf9ff;
   --color-surface-soft: #f3f0fb;
+<<<<<<< HEAD
+=======
+  --color-surface-elevated: #ffffff;
+  --color-border: #e7e2f1;
+>>>>>>> origin/03-design-system
 
   --color-ink-900: #0f0f14;
   --color-ink-700: #2d2a3a;
