@@ -1,5 +1,7 @@
-import { orderReference, type CartItem } from "@rocksa/domain";
-import { apiOptional } from "../lib/api.ts";
+import { useQuery } from "@tanstack/react-query";
+import { orderReference, type CartItem, type OrderStatus } from "@rocksa/domain";
+import { api, apiOptional } from "../lib/api.ts";
+import type { Order } from "../state/order.tsx";
 
 export interface CreateOrderInput {
   items: CartItem[];
@@ -8,24 +10,55 @@ export interface CreateOrderInput {
   totalCents: number;
 }
 
-export interface ServerOrder extends CreateOrderInput {
+export interface OrderSummary {
   id: string;
   reference: string;
-  createdAt: string;
-}
-
-interface ServerOrderRow {
-  id: string;
-  reference: string;
+  status: OrderStatus;
   subtotalCents: number;
   shippingCents: number;
   totalCents: number;
   createdAt: string;
 }
 
+interface ServerOrderRow {
+  id: string;
+  reference: string;
+  status: OrderStatus;
+  subtotalCents: number;
+  shippingCents: number;
+  totalCents: number;
+  createdAt: string;
+}
+
+interface ServerOrderItemRow {
+  specimenSlug: string;
+  qty: number;
+  unitPriceCents: number;
+}
+
+const toOrder = (
+  row: ServerOrderRow,
+  items: ServerOrderItemRow[],
+): Order => ({
+  id: row.id,
+  reference: row.reference,
+  subtotalCents: row.subtotalCents,
+  shippingCents: row.shippingCents,
+  totalCents: row.totalCents,
+  createdAt:
+    typeof row.createdAt === "string"
+      ? row.createdAt
+      : new Date(row.createdAt).toISOString(),
+  items: items.map((i) => ({
+    specimenId: i.specimenSlug,
+    qty: i.qty,
+    unitPriceCents: i.unitPriceCents,
+  })),
+});
+
 export const createServerOrder = async (
   input: CreateOrderInput,
-): Promise<ServerOrder | null> => {
+): Promise<Order | null> => {
   const res = await apiOptional<{ order: ServerOrderRow }>("/v1/orders", {
     method: "POST",
     body: {
@@ -33,6 +66,7 @@ export const createServerOrder = async (
         specimenId: i.specimenId,
         qty: i.qty,
       })),
+      shippingCents: input.shippingCents,
     },
   });
   if (!res) return null;
@@ -40,14 +74,56 @@ export const createServerOrder = async (
     ...input,
     id: res.order.id,
     reference: res.order.reference,
-    createdAt: res.order.createdAt,
+    createdAt:
+      typeof res.order.createdAt === "string"
+        ? res.order.createdAt
+        : new Date(res.order.createdAt).toISOString(),
   };
 };
 
-// Fallback for unauthenticated/local-only mode.
-export const createLocalOrder = (input: CreateOrderInput): ServerOrder => ({
+export const fetchOrder = async (orderId: string): Promise<Order> => {
+  const res = await api<{ order: ServerOrderRow; items: ServerOrderItemRow[] }>(
+    `/v1/orders/${orderId}`,
+  );
+  return toOrder(res.order, res.items);
+};
+
+export const fetchOrders = async (): Promise<OrderSummary[]> => {
+  const res = await api<{ orders: ServerOrderRow[] }>("/v1/orders");
+  return res.orders.map((row) => ({
+    id: row.id,
+    reference: row.reference,
+    status: row.status,
+    subtotalCents: row.subtotalCents,
+    shippingCents: row.shippingCents,
+    totalCents: row.totalCents,
+    createdAt:
+      typeof row.createdAt === "string"
+        ? row.createdAt
+        : new Date(row.createdAt).toISOString(),
+  }));
+};
+
+export const createLocalOrder = (input: CreateOrderInput): Order => ({
   ...input,
   id: crypto.randomUUID(),
   reference: orderReference(),
   createdAt: new Date().toISOString(),
 });
+
+export const useOrderDetail = (orderId: string, enabled: boolean) =>
+  useQuery({
+    queryKey: ["orders", orderId],
+    queryFn: () => fetchOrder(orderId),
+    enabled,
+    retry: false,
+    staleTime: 30_000,
+  });
+
+export const useOrdersList = (enabled: boolean) =>
+  useQuery({
+    queryKey: ["orders"],
+    queryFn: fetchOrders,
+    enabled,
+    staleTime: 30_000,
+  });

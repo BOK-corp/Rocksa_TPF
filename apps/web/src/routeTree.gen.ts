@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorkspaceIndexRouteImport } from './routes/workspace/index'
+import { Route as OrdersIndexRouteImport } from './routes/orders/index'
 import { Route as CheckoutIndexRouteImport } from './routes/checkout/index'
 import { Route as WorkspaceReportsRouteImport } from './routes/workspace/reports'
 import { Route as WorkspaceOverviewRouteImport } from './routes/workspace/overview'
@@ -40,6 +41,11 @@ const IndexRoute = IndexRouteImport.update({
 const WorkspaceIndexRoute = WorkspaceIndexRouteImport.update({
   id: '/workspace/',
   path: '/workspace/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrdersIndexRoute = OrdersIndexRouteImport.update({
+  id: '/orders/',
+  path: '/orders/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutIndexRoute = CheckoutIndexRouteImport.update({
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/workspace/overview': typeof WorkspaceOverviewRoute
   '/workspace/reports': typeof WorkspaceReportsRoute
   '/checkout/': typeof CheckoutIndexRoute
+  '/orders/': typeof OrdersIndexRoute
   '/workspace/': typeof WorkspaceIndexRoute
   '/c/$category/': typeof CCategoryIndexRoute
   '/c/$category/p/$slug': typeof CCategoryPSlugRoute
@@ -147,6 +154,7 @@ export interface FileRoutesByTo {
   '/workspace/overview': typeof WorkspaceOverviewRoute
   '/workspace/reports': typeof WorkspaceReportsRoute
   '/checkout': typeof CheckoutIndexRoute
+  '/orders': typeof OrdersIndexRoute
   '/workspace': typeof WorkspaceIndexRoute
   '/c/$category': typeof CCategoryIndexRoute
   '/c/$category/p/$slug': typeof CCategoryPSlugRoute
@@ -167,6 +175,7 @@ export interface FileRoutesById {
   '/workspace/overview': typeof WorkspaceOverviewRoute
   '/workspace/reports': typeof WorkspaceReportsRoute
   '/checkout/': typeof CheckoutIndexRoute
+  '/orders/': typeof OrdersIndexRoute
   '/workspace/': typeof WorkspaceIndexRoute
   '/c/$category/': typeof CCategoryIndexRoute
   '/c/$category/p/$slug': typeof CCategoryPSlugRoute
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | '/workspace/overview'
     | '/workspace/reports'
     | '/checkout/'
+    | '/orders/'
     | '/workspace/'
     | '/c/$category/'
     | '/c/$category/p/$slug'
@@ -207,6 +217,7 @@ export interface FileRouteTypes {
     | '/workspace/overview'
     | '/workspace/reports'
     | '/checkout'
+    | '/orders'
     | '/workspace'
     | '/c/$category'
     | '/c/$category/p/$slug'
@@ -226,6 +237,7 @@ export interface FileRouteTypes {
     | '/workspace/overview'
     | '/workspace/reports'
     | '/checkout/'
+    | '/orders/'
     | '/workspace/'
     | '/c/$category/'
     | '/c/$category/p/$slug'
@@ -246,6 +258,7 @@ export interface RootRouteChildren {
   WorkspaceOverviewRoute: typeof WorkspaceOverviewRoute
   WorkspaceReportsRoute: typeof WorkspaceReportsRoute
   CheckoutIndexRoute: typeof CheckoutIndexRoute
+  OrdersIndexRoute: typeof OrdersIndexRoute
   WorkspaceIndexRoute: typeof WorkspaceIndexRoute
   CCategoryIndexRoute: typeof CCategoryIndexRoute
   CCategoryPSlugRoute: typeof CCategoryPSlugRoute
@@ -272,6 +285,13 @@ declare module '@tanstack/react-router' {
       path: '/workspace'
       fullPath: '/workspace/'
       preLoaderRoute: typeof WorkspaceIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders/': {
+      id: '/orders/'
+      path: '/orders'
+      fullPath: '/orders/'
+      preLoaderRoute: typeof OrdersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout/': {
@@ -390,6 +410,7 @@ const rootRouteChildren: RootRouteChildren = {
   WorkspaceOverviewRoute: WorkspaceOverviewRoute,
   WorkspaceReportsRoute: WorkspaceReportsRoute,
   CheckoutIndexRoute: CheckoutIndexRoute,
+  OrdersIndexRoute: OrdersIndexRoute,
   WorkspaceIndexRoute: WorkspaceIndexRoute,
   CCategoryIndexRoute: CCategoryIndexRoute,
   CCategoryPSlugRoute: CCategoryPSlugRoute,

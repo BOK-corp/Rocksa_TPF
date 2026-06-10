@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@rocksa/db";
 import { orderItems, orders, specimens } from "@rocksa/db/schema";
@@ -16,6 +16,7 @@ const createBody = z.object({
       qty: z.number().int().min(1),
     }),
   ),
+  shippingCents: z.number().int().min(0).optional().default(0),
 });
 
 ordersRouter.post("/", async (c) => {
@@ -38,24 +39,38 @@ ordersRouter.post("/", async (c) => {
       };
     });
 
-  const inserted = await db
-    .insert(orders)
-    .values({
-      userUid: user.uid,
-      reference: orderReference(),
-      status: "pending_payment",
-      subtotalCents: subtotal,
-      shippingCents: 0,
-      totalCents: subtotal,
-    })
-    .returning();
-  const order = inserted[0]!;
+  const shippingCents = body.shippingCents;
+  const totalCents = subtotal + shippingCents;
+  const specimenSlugs = lines.map((l) => l.specimenSlug);
 
-  if (lines.length > 0) {
-    await db
-      .insert(orderItems)
-      .values(lines.map((l) => ({ orderId: order.id, ...l })));
-  }
+  const order = await db.transaction(async (tx) => {
+    const inserted = await tx
+      .insert(orders)
+      .values({
+        userUid: user.uid,
+        reference: orderReference(),
+        status: "pending_payment",
+        subtotalCents: subtotal,
+        shippingCents,
+        totalCents,
+      })
+      .returning();
+    const created = inserted[0]!;
+
+    if (lines.length > 0) {
+      await tx
+        .insert(orderItems)
+        .values(lines.map((l) => ({ orderId: created.id, ...l })));
+
+      await tx
+        .update(specimens)
+        .set({ stockStatus: "reserved" })
+        .where(inArray(specimens.slug, specimenSlugs));
+    }
+
+    return created;
+  });
+
   return c.json({ order });
 });
 

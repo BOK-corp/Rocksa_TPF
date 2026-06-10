@@ -98,6 +98,7 @@ export const CategorySidebar = ({
 export const WorkspaceSidebar = () => (
   <CategorySidebar
     extra={[
+      { label: "Orders", to: "/orders", icon: DocIcon },
       { label: "Reports", to: "/workspace/reports", icon: DocIcon },
       { label: "Analytics", to: "/workspace/analytics", icon: ChartIcon },
     ]}
