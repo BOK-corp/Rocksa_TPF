@@ -17,11 +17,7 @@ const PRETTIER_CONFIG_FILES = [
   "prettier.config.mjs",
 ];
 
-const OXLINT_CONFIG_FILES = [
-  ".oxlintrc.json",
-  "oxlint.json",
-  "packages/config/oxlint.json",
-];
+const OXLINT_CONFIG_FILES = [".oxlintrc.json", "oxlint.json", "packages/config/oxlint.json"];
 
 const FORMATTABLE_LANGUAGES = [
   "javascript",
@@ -119,9 +115,7 @@ const formatter = hasPrettier()
 mkdirSync(vscodeDir, { recursive: true });
 
 if (!formatter) {
-  console.log(
-    "No .prettierrc or oxlint config found — skipping editor formatter setup.",
-  );
+  console.log("No .prettierrc or oxlint config found — skipping editor formatter setup.");
   process.exit(0);
 }
 
@@ -136,9 +130,6 @@ writeFileSync(
   settingsPath,
   `${settingsHeader}${JSON.stringify(buildSettings(formatter), null, 2)}\n`,
 );
-writeFileSync(
-  extensionsPath,
-  `${JSON.stringify(buildExtensions(formatter), null, 2)}\n`,
-);
+writeFileSync(extensionsPath, `${JSON.stringify(buildExtensions(formatter), null, 2)}\n`);
 
 console.log(`Editor formatter set to ${formatter.label}.`);
