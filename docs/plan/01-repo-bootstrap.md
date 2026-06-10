@@ -9,7 +9,7 @@ Goal: stand up a Bun-based monorepo with the workspace layout described in
 - `bunfig.toml` configured for workspaces and test runner.
 - `tsconfig.base.json` with strict mode and path aliases for packages.
 - `packages/config` containing:
-  - `tsconfig/base.json`
+  - `tsconfig.base.json`
   - `tailwind/preset.css` (placeholder; populated in Phase 03)
   - `oxlint.json` preset (populated in Phase 02)
 - Empty packages with `package.json` + `tsconfig.json`:
