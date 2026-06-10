@@ -8,96 +8,92 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { useAuth } from "@rocksa/auth";
 import {
   addItem as addItemFn,
+  merge as mergeFn,
   removeItem as removeItemFn,
   setQty as setQtyFn,
   subtotal as subtotalFn,
+  total as totalFn,
   type CartItem,
   type Specimen,
 } from "@rocksa/domain";
-import { useAuth } from "@rocksa/auth";
-import { loadServerCart, saveServerCart } from "../data/api-cart.ts";
+import { loadServerCart, saveServerCart } from "./api.ts";
+import { readCartStorage, writeCartStorage } from "./storage.ts";
 
-const STORAGE_KEY = "rocksa.cart.v1";
-
-interface CartContextValue {
+export interface CartValue {
   items: CartItem[];
-  count: number;
-  subtotalCents: number;
+  subtotal: number;
+  total: number;
   add: (specimen: Specimen, qty?: number) => void;
-  setQty: (specimenId: string, qty: number) => void;
   remove: (specimenId: string) => void;
+  setQty: (specimenId: string, qty: number) => void;
+  merge: (guest: CartItem[], server?: CartItem[]) => CartItem[];
   clear: () => void;
 }
 
-const CartContext = createContext<CartContextValue | null>(null);
-
-const readStorage = (): CartItem[] => {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as CartItem[]) : [];
-  } catch {
-    return [];
-  }
-};
-
-const mergeItems = (a: CartItem[], b: CartItem[]): CartItem[] => {
-  const byId = new Map<string, CartItem>();
-  for (const it of [...a, ...b]) {
-    const existing = byId.get(it.specimenId);
-    byId.set(it.specimenId, existing ? { ...existing, qty: existing.qty + it.qty } : { ...it });
-  }
-  return [...byId.values()];
-};
+const CartContext = createContext<CartValue | null>(null);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const { user, status } = useAuth();
-  const [items, setItems] = useState<CartItem[]>(() => readStorage());
+  const { user, status, getIdToken } = useAuth();
+  const [items, setItems] = useState<CartItem[]>(() => readCartStorage());
   const lastPushedRef = useRef<string>("");
+  const mergedRef = useRef(false);
 
   useEffect(() => {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-    } catch {
-      /* ignore */
-    }
+    writeCartStorage(items);
   }, [items]);
 
   useEffect(() => {
-    if (status !== "authed" || !user) return;
+    if (status !== "authed" || !user) {
+      mergedRef.current = false;
+      return;
+    }
+    if (mergedRef.current) return;
+
     let cancelled = false;
     (async () => {
       try {
-        const remote = await loadServerCart();
-        const guest = readStorage();
-        const merged = mergeItems(remote, guest);
+        const token = await getIdToken();
+        const remote = await loadServerCart(token);
+        const guest = readCartStorage();
+        const merged = mergeFn(remote, guest);
         if (cancelled) return;
+        mergedRef.current = true;
         setItems(merged);
         const serialized = JSON.stringify(merged);
         if (serialized !== lastPushedRef.current) {
-          await saveServerCart(merged);
+          await saveServerCart(token, merged);
           lastPushedRef.current = serialized;
         }
       } catch {
-        /* leave local cart in place */
+        /* keep local cart */
       }
     })();
+
     return () => {
       cancelled = true;
     };
-  }, [status, user]);
+  }, [status, user, getIdToken]);
 
   useEffect(() => {
     if (status !== "authed" || !user) return;
     const serialized = JSON.stringify(items);
     if (serialized === lastPushedRef.current) return;
     lastPushedRef.current = serialized;
-    saveServerCart(items).catch(() => {
+    (async () => {
+      const token = await getIdToken();
+      await saveServerCart(token, items);
+    })().catch(() => {
       /* ignore transient failures */
     });
-  }, [items, status, user]);
+  }, [items, status, user, getIdToken]);
+
+  const merge = useCallback(
+    (guest: CartItem[], server: CartItem[] = items) => mergeFn(server, guest),
+    [items],
+  );
 
   const add = useCallback(
     (specimen: Specimen, qty: number = 1) => setItems((prev) => addItemFn(prev, specimen, qty)),
@@ -110,24 +106,33 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const remove = useCallback((id: string) => setItems((prev) => removeItemFn(prev, id)), []);
   const clear = useCallback(() => setItems([]), []);
 
-  const value = useMemo<CartContextValue>(
+  const subtotal = subtotalFn(items);
+
+  const value = useMemo<CartValue>(
     () => ({
       items,
-      count: items.reduce((n, i) => n + i.qty, 0),
-      subtotalCents: subtotalFn(items),
+      subtotal,
+      total: totalFn(subtotal),
       add,
-      setQty,
       remove,
+      setQty,
+      merge,
       clear,
     }),
-    [items, add, setQty, remove, clear],
+    [items, subtotal, add, remove, setQty, merge, clear],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 
-export const useCart = (): CartContextValue => {
+export const useCart = (): CartValue => {
   const ctx = useContext(CartContext);
   if (!ctx) throw new Error("useCart must be used inside <CartProvider>");
   return ctx;
+};
+
+/** Total line-item quantity for nav badges. */
+export const useCartCount = (): number => {
+  const { items } = useCart();
+  return items.reduce((n, i) => n + i.qty, 0);
 };

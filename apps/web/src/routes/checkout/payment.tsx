@@ -13,20 +13,8 @@ import {
   TabsList,
   TabsTrigger,
 } from "@rocksa/ui";
-import { TopNav } from "../../components/TopNav.tsx";
-import { CheckoutStepper } from "../../components/checkout/CheckoutStepper.tsx";
-import { OrderSummary } from "../../components/checkout/OrderSummary.tsx";
-import {
-  paymentSchema,
-  type PaymentForm,
-} from "../../components/checkout/checkout-schemas.ts";
-import {
-  isCheckoutInfoValid,
-  readStoredCartItems,
-  readStoredCheckoutInfo,
-  writeStoredPaymentInfo,
-} from "../../lib/checkout-storage.ts";
-import { useCart } from "../../state/cart.tsx";
+import { formatPrice } from "@rocksa/domain";
+import { useCart } from "@rocksa/cart";
 import { useOrder } from "../../state/order.tsx";
 
 export const Route = createFileRoute("/checkout/payment")({
@@ -42,40 +30,23 @@ export const Route = createFileRoute("/checkout/payment")({
 });
 
 function Payment() {
-  const { items } = useCart();
-  const { info, payment, setPayment } = useOrder();
+  const { items, subtotal, total, clear } = useCart();
+  const { createOrder } = useOrder();
   const navigate = useNavigate();
+  const findSpecimenById = useSpecimenLookup();
+  const firstItem = items[0];
+  const firstSpecimen = firstItem ? findSpecimenById(firstItem.specimenId) : null;
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm<PaymentForm>({
-    resolver: zodResolver(paymentSchema),
-    defaultValues: {
-      method: payment.method ?? "card",
-      cardholderName: payment.cardholderName ?? "",
-      cardNumber: payment.cardNumber ?? "",
-      expiration: payment.expiration ?? "",
-      cvc: payment.cvc ?? "",
-    },
-  });
-
-  const method = watch("method");
-
-  useEffect(() => {
-    const sub = watch((data) =>
-      writeStoredPaymentInfo({ method: "card", ...data }),
-    );
-    return () => sub.unsubscribe();
-  }, [watch]);
-
-  const onSubmit = (data: PaymentForm) => {
-    // TODO(stripe): mount Stripe Elements here and confirm payment intent before order creation.
-    setPayment(data);
-    navigate({ to: "/checkout/review" });
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const order = await createOrder({
+      items: [...items],
+      subtotalCents: subtotal,
+      shippingCents: 0,
+      totalCents: total,
+    });
+    clear();
+    navigate({ to: "/orders/$orderId", params: { orderId: order.id } });
   };
 
   return (
@@ -205,7 +176,60 @@ function Payment() {
         </form>
 
         <aside>
-          <OrderSummary items={items} info={info} />
+          <Card>
+            <CardBody className="space-y-4">
+              <h2 className="font-display text-2xl">Order Summary</h2>
+              {firstSpecimen && (
+                <div className="flex gap-3">
+                  <img
+                    src={firstSpecimen.imageUrl}
+                    alt=""
+                    className="h-16 w-16 rounded-md object-cover"
+                  />
+                  <div className="flex-1">
+                    <p className="font-medium">{firstSpecimen.name}</p>
+                    <p className="text-xs text-ink-500">
+                      {Object.values(firstSpecimen.attributes).slice(0, 2).join(", ")}
+                    </p>
+                    <p className="font-display text-lg">
+                      {formatPrice(firstSpecimen.priceCents)}
+                    </p>
+                  </div>
+                </div>
+              )}
+              <Separator />
+              <div className="flex justify-between text-sm">
+                <span>Subtotal</span>
+                <span>{formatPrice(subtotal)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span>Insured Shipping</span>
+                <span className="text-brand-600">Complimentary</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span>Taxes</span>
+                <span className="text-ink-500">Calculated at next step</span>
+              </div>
+              <Separator />
+              <div className="flex items-baseline justify-between">
+                <span className="font-display text-2xl">Total</span>
+                <span className="font-display text-2xl text-brand-600">
+                  {formatPrice(total)}
+                </span>
+              </div>
+              <Button
+                onClick={(e) => void submit(e)}
+                className="w-full"
+                size="lg"
+                type="button"
+              >
+                <LockIcon className="h-4 w-4" /> Complete Purchase
+              </Button>
+              <p className="flex items-center justify-center gap-1 text-xs text-ink-500">
+                <ShieldIcon className="h-3 w-3" /> Backed by Rocksa Authenticity Guarantee
+              </p>
+            </CardBody>
+          </Card>
         </aside>
       </main>
     </div>
