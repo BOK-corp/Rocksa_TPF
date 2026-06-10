@@ -184,7 +184,6 @@ export interface FileRoutesByTo {
   '/workspace/reports': typeof WorkspaceReportsRoute
   '/checkout': typeof CheckoutIndexRoute
   '/orders': typeof OrdersIndexRoute
-  '/workspace': typeof WorkspaceIndexRoute
   '/c/$category': typeof CCategoryIndexRoute
   '/c/$category/p/$slug': typeof CCategoryPSlugRoute
 }
@@ -257,7 +256,6 @@ export interface FileRouteTypes {
     | '/workspace/reports'
     | '/checkout'
     | '/orders'
-    | '/workspace'
     | '/c/$category'
     | '/c/$category/p/$slug'
   id:
@@ -297,7 +295,6 @@ export interface RootRouteChildren {
   OrdersOrderIdRoute: typeof OrdersOrderIdRoute
   CheckoutIndexRoute: typeof CheckoutIndexRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
-  WorkspaceIndexRoute: typeof WorkspaceIndexRoute
   CCategoryIndexRoute: typeof CCategoryIndexRoute
   CCategoryPSlugRoute: typeof CCategoryPSlugRoute
 }
@@ -494,8 +491,6 @@ const WorkspaceRouteRouteChildren: WorkspaceRouteRouteChildren = {
   WorkspaceInventoryRoute: WorkspaceInventoryRoute,
   WorkspaceOverviewRoute: WorkspaceOverviewRoute,
   WorkspaceReportsRoute: WorkspaceReportsRoute,
-  CheckoutIndexRoute: CheckoutIndexRoute,
-  OrdersIndexRoute: OrdersIndexRoute,
   WorkspaceIndexRoute: WorkspaceIndexRoute,
 }
 
@@ -513,6 +508,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutReviewRoute: CheckoutReviewRoute,
   OrdersOrderIdRoute: OrdersOrderIdRoute,
   CheckoutIndexRoute: CheckoutIndexRoute,
+  OrdersIndexRoute: OrdersIndexRoute,
   CCategoryIndexRoute: CCategoryIndexRoute,
   CCategoryPSlugRoute: CCategoryPSlugRoute,
 }
