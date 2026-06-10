@@ -10,5 +10,12 @@
     "react/jsx-key": "error",
     "react/no-array-index-key": "warn"
   },
-  "ignorePatterns": ["**/dist/**", "**/build/**", "**/node_modules/**", "**/.vite/**"]
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/build/**",
+    "**/node_modules/**",
+    "**/.vite/**",
+    "**/routeTree.gen.ts",
+    ".vscode/**"
+  ]
 }

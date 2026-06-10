@@ -27,5 +27,6 @@
   },
   "oxc.enable.oxfmt": true,
   "oxc.enable.oxlint": true,
-  "oxc.configPath": ".oxlintrc.json"
+  "oxc.configPath": ".oxlintrc.json",
+  "oxc.fmt.configPath": ".oxfmtrc.json"
 }

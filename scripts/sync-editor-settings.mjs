@@ -130,6 +130,6 @@ writeFileSync(
   settingsPath,
   `${settingsHeader}${JSON.stringify(buildSettings(formatter), null, 2)}\n`,
 );
-writeFileSync(extensionsPath, `${JSON.stringify(buildExtensions(formatter), null, 2)}\n`);
+writeFileSync(extensionsPath, `${JSON.stringify(buildExtensions(formatter))}\n`);
 
 console.log(`Editor formatter set to ${formatter.label}.`);
