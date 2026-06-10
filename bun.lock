@@ -62,6 +62,10 @@
         "react": "^19.0.0",
       },
     },
+    "packages/config": {
+      "name": "@rocksa/config",
+      "version": "0.0.0",
+    },
     "packages/db": {
       "name": "@rocksa/db",
       "version": "0.0.0",
@@ -429,6 +433,8 @@
     "@rocksa/api": ["@rocksa/api@workspace:apps/api"],
 
     "@rocksa/auth": ["@rocksa/auth@workspace:packages/auth"],
+
+    "@rocksa/config": ["@rocksa/config@workspace:packages/config"],
 
     "@rocksa/db": ["@rocksa/db@workspace:packages/db"],
 
