@@ -86,9 +86,8 @@ const WorkspaceAcquisitionsRoute = WorkspaceAcquisitionsRouteImport.update({
   getParentRoute: () => WorkspaceRouteRoute,
 } as any)
 const Workspace_layoutRoute = Workspace_layoutRouteImport.update({
-  id: '/workspace/__layout',
-  path: '/workspace',
-  getParentRoute: () => rootRouteImport,
+  id: '/__layout',
+  getParentRoute: () => WorkspaceRouteRoute,
 } as any)
 const OrdersOrderIdRoute = OrdersOrderIdRouteImport.update({
   id: '/orders/$orderId',
@@ -142,7 +141,6 @@ export interface FileRoutesByFullPath {
   '/auth/reset': typeof AuthResetRoute
   '/checkout/payment': typeof CheckoutPaymentRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
-  '/workspace': typeof Workspace_layoutRoute
   '/workspace/acquisitions': typeof WorkspaceAcquisitionsRoute
   '/workspace/analytics': typeof WorkspaceAnalyticsRoute
   '/workspace/inventory': typeof WorkspaceInventoryRoute
@@ -209,7 +207,6 @@ export interface FileRouteTypes {
     | '/auth/reset'
     | '/checkout/payment'
     | '/orders/$orderId'
-    | '/workspace'
     | '/workspace/acquisitions'
     | '/workspace/analytics'
     | '/workspace/inventory'
@@ -268,6 +265,7 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   WorkspaceRouteRoute: typeof WorkspaceRouteRouteWithChildren
   CartRoute: typeof CartRoute
+  DevComponentsRoute: typeof DevComponentsRoute
   CheckoutPaymentRoute: typeof CheckoutPaymentRoute
   OrdersOrderIdRoute: typeof OrdersOrderIdRoute
   CheckoutIndexRoute: typeof CheckoutIndexRoute
@@ -356,10 +354,10 @@ declare module '@tanstack/react-router' {
     }
     '/workspace/__layout': {
       id: '/workspace/__layout'
-      path: '/workspace'
+      path: ''
       fullPath: '/workspace'
       preLoaderRoute: typeof Workspace_layoutRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof WorkspaceRouteRoute
     }
     '/orders/$orderId': {
       id: '/orders/$orderId'
@@ -437,6 +435,7 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 )
 
 interface WorkspaceRouteRouteChildren {
+  Workspace_layoutRoute: typeof Workspace_layoutRoute
   WorkspaceAcquisitionsRoute: typeof WorkspaceAcquisitionsRoute
   WorkspaceAnalyticsRoute: typeof WorkspaceAnalyticsRoute
   WorkspaceInventoryRoute: typeof WorkspaceInventoryRoute
@@ -446,6 +445,7 @@ interface WorkspaceRouteRouteChildren {
 }
 
 const WorkspaceRouteRouteChildren: WorkspaceRouteRouteChildren = {
+  Workspace_layoutRoute: Workspace_layoutRoute,
   WorkspaceAcquisitionsRoute: WorkspaceAcquisitionsRoute,
   WorkspaceAnalyticsRoute: WorkspaceAnalyticsRoute,
   WorkspaceInventoryRoute: WorkspaceInventoryRoute,
@@ -463,6 +463,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   WorkspaceRouteRoute: WorkspaceRouteRouteWithChildren,
   CartRoute: CartRoute,
+  DevComponentsRoute: DevComponentsRoute,
   CheckoutPaymentRoute: CheckoutPaymentRoute,
   OrdersOrderIdRoute: OrdersOrderIdRoute,
   CheckoutIndexRoute: CheckoutIndexRoute,
