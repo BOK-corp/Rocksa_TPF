@@ -1,7 +1,7 @@
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import type { QueryClient } from "@tanstack/react-query";
 import { AuthProvider } from "@rocksa/auth";
-import { CartProvider } from "../state/cart.tsx";
+import { CartProvider } from "@rocksa/cart";
 import { OrderProvider } from "../state/order.tsx";
 
 interface RouterContext {

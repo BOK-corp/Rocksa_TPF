@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@rocksa/auth": "workspace:*",
+    "@rocksa/cart": "workspace:*",
     "@rocksa/domain": "workspace:*",
     "@rocksa/ui": "workspace:*",
     "@tanstack/react-query": "^5.59.20",

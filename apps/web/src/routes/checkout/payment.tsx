@@ -12,7 +12,7 @@ import {
   TabsTrigger,
 } from "@rocksa/ui";
 import { formatPrice } from "@rocksa/domain";
-import { useCart } from "../../state/cart.tsx";
+import { useCart } from "@rocksa/cart";
 import { useOrder } from "../../state/order.tsx";
 import { useSpecimenLookup } from "../../data/api-specimens.ts";
 import { LockIcon, ShieldIcon } from "../../components/Icons.tsx";
@@ -20,7 +20,7 @@ import { LockIcon, ShieldIcon } from "../../components/Icons.tsx";
 export const Route = createFileRoute("/checkout/payment")({ component: Payment });
 
 function Payment() {
-  const { items, subtotalCents, clear } = useCart();
+  const { items, subtotal, total, clear } = useCart();
   const { createOrder } = useOrder();
   const navigate = useNavigate();
   const findSpecimenById = useSpecimenLookup();
@@ -31,9 +31,9 @@ function Payment() {
     e.preventDefault();
     const order = await createOrder({
       items: [...items],
-      subtotalCents,
+      subtotalCents: subtotal,
       shippingCents: 0,
-      totalCents: subtotalCents,
+      totalCents: total,
     });
     clear();
     navigate({ to: "/orders/$orderId", params: { orderId: order.id } });
@@ -149,7 +149,7 @@ function Payment() {
               <Separator />
               <div className="flex justify-between text-sm">
                 <span>Subtotal</span>
-                <span>{formatPrice(subtotalCents)}</span>
+                <span>{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span>Insured Shipping</span>
@@ -163,7 +163,7 @@ function Payment() {
               <div className="flex items-baseline justify-between">
                 <span className="font-display text-2xl">Total</span>
                 <span className="font-display text-2xl text-brand-600">
-                  {formatPrice(subtotalCents)}
+                  {formatPrice(total)}
                 </span>
               </div>
               <Button
