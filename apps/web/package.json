@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.0.1",
     "@rocksa/auth": "workspace:*",
     "@rocksa/domain": "workspace:*",
     "@rocksa/ui": "workspace:*",
@@ -17,7 +18,9 @@
     "@tanstack/react-router": "^1.78.0",
     "firebase": "^12.11.0",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "react-hook-form": "^7.56.4",
+    "zod": "^3.25.28"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0-beta.6",
