@@ -10,6 +10,7 @@ const STATUS_TONE = {
   in_stock: "brand",
   low_stock: "warning",
   on_display: "neutral",
+  reserved: "warning",
   sold: "danger",
 } as const;
 

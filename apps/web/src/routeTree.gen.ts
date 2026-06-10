@@ -14,6 +14,7 @@ import { Route as WorkspaceRouteRouteImport } from './routes/workspace/route'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorkspaceIndexRouteImport } from './routes/workspace/index'
+import { Route as OrdersIndexRouteImport } from './routes/orders/index'
 import { Route as CheckoutIndexRouteImport } from './routes/checkout/index'
 import { Route as WorkspaceReportsRouteImport } from './routes/workspace/reports'
 import { Route as WorkspaceOverviewRouteImport } from './routes/workspace/overview'
@@ -55,6 +56,11 @@ const WorkspaceIndexRoute = WorkspaceIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => WorkspaceRouteRoute,
+} as any)
+const OrdersIndexRoute = OrdersIndexRouteImport.update({
+  id: '/orders/',
+  path: '/orders/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutIndexRoute = CheckoutIndexRouteImport.update({
   id: '/checkout/',
@@ -154,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/workspace/overview': typeof WorkspaceOverviewRoute
   '/workspace/reports': typeof WorkspaceReportsRoute
   '/checkout/': typeof CheckoutIndexRoute
+  '/orders/': typeof OrdersIndexRoute
   '/workspace/': typeof WorkspaceIndexRoute
   '/c/$category/': typeof CCategoryIndexRoute
   '/c/$category/p/$slug': typeof CCategoryPSlugRoute
@@ -176,6 +183,8 @@ export interface FileRoutesByTo {
   '/workspace/overview': typeof WorkspaceOverviewRoute
   '/workspace/reports': typeof WorkspaceReportsRoute
   '/checkout': typeof CheckoutIndexRoute
+  '/orders': typeof OrdersIndexRoute
+  '/workspace': typeof WorkspaceIndexRoute
   '/c/$category': typeof CCategoryIndexRoute
   '/c/$category/p/$slug': typeof CCategoryPSlugRoute
 }
@@ -199,6 +208,7 @@ export interface FileRoutesById {
   '/workspace/overview': typeof WorkspaceOverviewRoute
   '/workspace/reports': typeof WorkspaceReportsRoute
   '/checkout/': typeof CheckoutIndexRoute
+  '/orders/': typeof OrdersIndexRoute
   '/workspace/': typeof WorkspaceIndexRoute
   '/c/$category/': typeof CCategoryIndexRoute
   '/c/$category/p/$slug': typeof CCategoryPSlugRoute
@@ -223,6 +233,7 @@ export interface FileRouteTypes {
     | '/workspace/overview'
     | '/workspace/reports'
     | '/checkout/'
+    | '/orders/'
     | '/workspace/'
     | '/c/$category/'
     | '/c/$category/p/$slug'
@@ -245,6 +256,8 @@ export interface FileRouteTypes {
     | '/workspace/overview'
     | '/workspace/reports'
     | '/checkout'
+    | '/orders'
+    | '/workspace'
     | '/c/$category'
     | '/c/$category/p/$slug'
   id:
@@ -267,6 +280,7 @@ export interface FileRouteTypes {
     | '/workspace/overview'
     | '/workspace/reports'
     | '/checkout/'
+    | '/orders/'
     | '/workspace/'
     | '/c/$category/'
     | '/c/$category/p/$slug'
@@ -282,6 +296,8 @@ export interface RootRouteChildren {
   CheckoutReviewRoute: typeof CheckoutReviewRoute
   OrdersOrderIdRoute: typeof OrdersOrderIdRoute
   CheckoutIndexRoute: typeof CheckoutIndexRoute
+  OrdersIndexRoute: typeof OrdersIndexRoute
+  WorkspaceIndexRoute: typeof WorkspaceIndexRoute
   CCategoryIndexRoute: typeof CCategoryIndexRoute
   CCategoryPSlugRoute: typeof CCategoryPSlugRoute
 }
@@ -322,6 +338,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/workspace/'
       preLoaderRoute: typeof WorkspaceIndexRouteImport
       parentRoute: typeof WorkspaceRouteRoute
+    }
+    '/orders/': {
+      id: '/orders/'
+      path: '/orders'
+      fullPath: '/orders/'
+      preLoaderRoute: typeof OrdersIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/checkout/': {
       id: '/checkout/'
@@ -471,6 +494,8 @@ const WorkspaceRouteRouteChildren: WorkspaceRouteRouteChildren = {
   WorkspaceInventoryRoute: WorkspaceInventoryRoute,
   WorkspaceOverviewRoute: WorkspaceOverviewRoute,
   WorkspaceReportsRoute: WorkspaceReportsRoute,
+  CheckoutIndexRoute: CheckoutIndexRoute,
+  OrdersIndexRoute: OrdersIndexRoute,
   WorkspaceIndexRoute: WorkspaceIndexRoute,
 }
 

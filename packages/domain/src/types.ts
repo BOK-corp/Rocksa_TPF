@@ -1,4 +1,9 @@
-export type StockStatus = "in_stock" | "low_stock" | "on_display" | "sold";
+export type StockStatus =
+  | "in_stock"
+  | "low_stock"
+  | "on_display"
+  | "reserved"
+  | "sold";
 
 export type OrderStatus =
   | "pending_payment"
