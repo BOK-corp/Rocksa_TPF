@@ -92,6 +92,19 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{}'
 
+      - name: Debug token decode
+        run: |
+          # Zarejestruj usera przez emulator i pobierz token
+          curl -s -X POST \
+            "http://127.0.0.1:9099/identitytoolkit.googleapis.com/v1/accounts:signUp?key=demo-api-key" \
+            -H "Content-Type: application/json" \
+            -d '{"email":"test@test.com","password":"password123","returnSecureToken":true}' \
+            | tee /tmp/token.json
+          TOKEN=$(cat /tmp/token.json | python3 -c "import sys,json; print(json.load(sys.stdin)['idToken'])")
+          curl -s -X POST http://localhost:8787/debug-token \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Content-Type: application/json"
+
       - name: Run tests
         run: bun test
 

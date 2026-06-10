@@ -25,6 +25,13 @@ app.route("/v1/cart", cartRouter);
 app.route("/v1/orders", ordersRouter);
 app.route("/v1/me", meRouter);
 
+app.post("/debug-token", async (c) => {
+  const token = c.req.header("authorization")?.slice(7) ?? "";
+  const parts = token.split(".");
+  const payload = parts[1] ? Buffer.from(parts[1], "base64").toString("utf8") : "no payload";
+  return c.json({ parts: parts.length, payload });
+});
+
 console.log(`api listening on http://localhost:${env.PORT}`);
 
 export default {
