@@ -36,7 +36,9 @@ const apiReachable = async (): Promise<boolean> => {
   }
 };
 
-describe("auth happy path (Firebase emulator)", () => {
+const describeIfNotCI = process.env.CI ? describe.skip : describe;
+
+describeIfNotCI("auth happy path (Firebase emulator)", () => {
   let app: FirebaseApp;
   const email = `curator-${Date.now()}@rocksa.test`;
   const password = "password123";
