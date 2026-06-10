@@ -82,6 +82,9 @@ jobs:
       - name: Wait for services
         run: npx wait-on tcp:9099 tcp:8787 --timeout 30000
 
+      - name: Debug API health
+        run: curl -v http://localhost:8787/health
+
       - name: Run tests
         run: bun test
 
