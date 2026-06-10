@@ -30,9 +30,15 @@ cartRouter.get("/", async (c) => {
       unitPriceCents: specimens.priceCents,
     })
     .from(cartItems)
-    .innerJoin(specimens, eq(specimens.id, cartItems.specimenId))
-    .where(eq(cartItems.cartId, cart.id));
-  return c.json({ items: rows });
+    .innerJoin(specimens, eq(specimens.slug, cartItems.specimenSlug))
+    .where(eq(cartItems.userId, user.id));
+  return c.json({
+    items: rows.map((r) => ({
+      specimenId: r.specimenSlug,
+      qty: r.qty,
+      unitPriceCents: r.unitPriceCents,
+    })),
+  });
 });
 
 const upsertBody = z.object({
@@ -49,12 +55,12 @@ cartRouter.put("/", async (c) => {
   const body = upsertBody.parse(await c.req.json());
   const cart = await getOrCreateCart(user.id);
 
-  await db.delete(cartItems).where(eq(cartItems.cartId, cart.id));
+  await db.delete(cartItems).where(eq(cartItems.userId, user.id));
   const rows = body.items
     .filter((i) => i.qty > 0)
     .map((i) => ({
-      cartId: cart.id,
-      specimenId: i.specimenId,
+      userId: user.id,
+      specimenSlug: i.specimenId,
       qty: i.qty,
     }));
   if (rows.length > 0) await db.insert(cartItems).values(rows);
@@ -78,10 +84,7 @@ cartRouter.delete("/items/:slug", async (c) => {
   await db
     .delete(cartItems)
     .where(
-      and(
-        eq(cartItems.cartId, cart.id),
-        eq(cartItems.specimenId, specimen[0].id),
-      ),
+      and(eq(cartItems.userId, user.id), eq(cartItems.specimenSlug, slug)),
     );
   return c.json({ ok: true });
 });

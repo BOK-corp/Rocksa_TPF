@@ -43,47 +43,12 @@ export const specimens = pgTable(
   }),
 );
 
-export const specimenAttrs = pgTable(
-  "specimen_attrs",
-  {
-    specimenId: uuid("specimen_id")
-      .notNull()
-      .references(() => specimens.id, { onDelete: "cascade" }),
-    key: text("key").notNull(),
-    value: text("value").notNull(),
-  },
-  (t) => ({
-    pk: primaryKey({ columns: [t.specimenId, t.key] }),
-  }),
-);
-
-export const collections = pgTable("collections", {
+export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
-  name: text("name").notNull(),
-  slug: text("slug").notNull().unique(),
-});
-
-export const collectionItems = pgTable(
-  "collection_items",
-  {
-    collectionId: uuid("collection_id")
-      .notNull()
-      .references(() => collections.id, { onDelete: "cascade" }),
-    specimenId: uuid("specimen_id")
-      .notNull()
-      .references(() => specimens.id, { onDelete: "cascade" }),
-    position: integer("position").notNull().default(0),
-  },
-  (t) => ({
-    pk: primaryKey({ columns: [t.collectionId, t.specimenId] }),
-  }),
-);
-
-export const carts = pgTable("carts", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+  firebaseUid: text("firebase_uid").notNull().unique(),
+  email: text("email").notNull(),
+  fullName: text("full_name"),
+  role: text("role").notNull().default("buyer"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
@@ -95,16 +60,16 @@ export const carts = pgTable("carts", {
 export const cartItems = pgTable(
   "cart_items",
   {
-    cartId: uuid("cart_id")
+    userId: uuid("user_id")
       .notNull()
-      .references(() => carts.id, { onDelete: "cascade" }),
-    specimenId: uuid("specimen_id")
+      .references(() => users.id, { onDelete: "cascade" }),
+    specimenSlug: text("specimen_slug")
       .notNull()
       .references(() => specimens.id, { onDelete: "cascade" }),
     qty: integer("qty").notNull(),
   },
   (t) => ({
-    pk: primaryKey({ columns: [t.cartId, t.specimenId] }),
+    pk: primaryKey({ columns: [t.userId, t.specimenSlug] }),
   }),
 );
 

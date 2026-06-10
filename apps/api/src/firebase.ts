@@ -69,7 +69,8 @@ export const verifyIdToken = async (token: string): Promise<DecodedToken | null>
       email: decoded.email ?? null,
       name: decoded.name ?? null,
     };
-  } catch {
+  } catch (e) {
+    console.error("verifyIdToken error:", e);
     return null;
   }
 };
