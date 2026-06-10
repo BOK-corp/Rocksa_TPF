@@ -3,14 +3,22 @@ import { Badge } from "@rocksa/ui";
 import { formatPrice, type Specimen } from "@rocksa/domain";
 import { PlusIcon, StarIcon } from "./Icons.tsx";
 import { useCart } from "../state/cart.tsx";
+import { saveListingScroll } from "../lib/listing-scroll.ts";
+import type { ListingSearch } from "../lib/listing-search.ts";
 
 interface Props {
   specimen: Specimen;
   rating?: number;
   variant?: "rail" | "grid";
+  listingSearch?: ListingSearch;
 }
 
-export const ProductCard = ({ specimen, rating, variant = "rail" }: Props) => {
+export const ProductCard = ({
+  specimen,
+  rating,
+  variant = "rail",
+  listingSearch,
+}: Props) => {
   const { add } = useCart();
 
   return (
@@ -19,6 +27,8 @@ export const ProductCard = ({ specimen, rating, variant = "rail" }: Props) => {
         to="/c/$category/p/$slug"
         params={{ category: specimen.category, slug: specimen.slug }}
         search={{ modal: true }}
+        state={{ listingSearch }}
+        onClick={() => saveListingScroll()}
         className="relative block aspect-square overflow-hidden bg-surface-soft"
       >
         {specimen.stockStatus === "low_stock" && (

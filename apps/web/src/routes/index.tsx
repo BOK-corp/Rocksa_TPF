@@ -1,17 +1,33 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Badge, Button, Card, CardBody } from "@rocksa/ui";
 import { TopNav } from "../components/TopNav.tsx";
 import { CategorySidebar } from "../components/CategorySidebar.tsx";
 import { ProductCard } from "../components/ProductCard.tsx";
 import { ArrowRightIcon, ChevronIcon } from "../components/Icons.tsx";
 import { useSpecimens } from "../data/api-specimens.ts";
+import { specimensQueryOptions } from "../data/specimens-query.ts";
 
-export const Route = createFileRoute("/")({ component: Landing });
+export const Route = createFileRoute("/")({
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(specimensQueryOptions),
+  component: Landing,
+});
+
+const PAGE_SIZE = 4;
 
 function Landing() {
   const { data = [] } = useSpecimens();
-  const trending = data.slice(0, 4);
-  const featured = data[1] ?? data[0];
+  const [page, setPage] = useState(0);
+  const featured =
+    data.find((s) => s.slug === "amethyst-geode-slice") ??
+    data.find((s) => s.category === "crystals") ??
+    data[0];
+  const maxPage = Math.max(0, Math.ceil(data.length / PAGE_SIZE) - 1);
+  const trending = data.slice(
+    page * PAGE_SIZE,
+    page * PAGE_SIZE + PAGE_SIZE,
+  );
 
   return (
     <div>
@@ -36,14 +52,17 @@ function Landing() {
                   NEW ACQUISITION
                 </Badge>
                 <h1 className="font-display text-4xl mt-4 leading-tight">
-                  Uruguayan Deep Purple Amethyst Geode
+                  {featured?.name ?? "Featured Specimen"}
                 </h1>
                 <p className="text-sm mt-3 text-white/85 max-w-sm">
-                  Exceptional clarity and saturation. Museum-grade specimen
-                  recently cataloged into our central repository.
+                  {featured?.description ??
+                    "Exceptional clarity and saturation from our latest catalog."}
                 </p>
                 <Button asChild className="mt-6">
-                  <Link to="/c/$category" params={{ category: "crystals" }}>
+                  <Link
+                    to="/c/$category"
+                    params={{ category: featured?.category ?? "crystals" }}
+                  >
                     Explore Collection <ArrowRightIcon className="h-4 w-4" />
                   </Link>
                 </Button>
@@ -83,10 +102,22 @@ function Landing() {
             <div className="flex items-end justify-between">
               <h2 className="font-display text-3xl">Trending Now</h2>
               <div className="flex gap-2 text-ink-500">
-                <button className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-ink-700/10">
+                <button
+                  type="button"
+                  aria-label="Previous specimens"
+                  disabled={page <= 0}
+                  onClick={() => setPage((p) => Math.max(0, p - 1))}
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-ink-700/10 disabled:opacity-40"
+                >
                   <ChevronIcon className="h-4 w-4 rotate-180" />
                 </button>
-                <button className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-ink-700/10">
+                <button
+                  type="button"
+                  aria-label="Next specimens"
+                  disabled={page >= maxPage}
+                  onClick={() => setPage((p) => Math.min(maxPage, p + 1))}
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-ink-700/10 disabled:opacity-40"
+                >
                   <ChevronIcon className="h-4 w-4" />
                 </button>
               </div>

@@ -11,18 +11,19 @@ import {
   SelectValue,
   Skeleton,
 } from "@rocksa/ui";
-import type { Category } from "@rocksa/domain";
+import {
+  applyListing,
+  attributeValues,
+  type Category,
+  type ListingSort,
+} from "@rocksa/domain";
 import { TopNav } from "./TopNav.tsx";
 import { CategorySidebar } from "./CategorySidebar.tsx";
 import { ProductCard } from "./ProductCard.tsx";
 import { useSpecimens } from "../data/api-specimens.ts";
+import type { ListingSearch } from "../lib/listing-search.ts";
 
-export interface ListingSearch {
-  sub?: string;
-  sort?: "newest" | "price-asc" | "price-desc";
-  minPrice?: number;
-  maxPrice?: number;
-}
+export type { ListingSearch };
 
 const RATINGS = [4.9, 4.7, 5.0, 4.6, 4.8, 4.5, 4.9];
 const titleCase = (s: string) => s[0]!.toUpperCase() + s.slice(1);
@@ -38,28 +39,47 @@ export const CategoryListing = ({ category, search, inert = false }: Props) => {
   const navigate = useNavigate();
   const { data: all = [], isLoading } = useSpecimens();
 
-  const items = useMemo(() => {
-    return all
-      .filter((s) => s.category === (category as Category))
-      .filter((s) => {
-        if (search.sub && s.subcategory !== search.sub) return false;
-        if (search.minPrice && s.priceCents < search.minPrice * 100) return false;
-        if (search.maxPrice && s.priceCents > search.maxPrice * 100) return false;
-        return true;
-      });
-  }, [all, category, search]);
+  const inCategory = useMemo(
+    () => all.filter((s) => s.category === (category as Category)),
+    [all, category],
+  );
 
   const subcategories = useMemo(
     () =>
       Array.from(
         new Set(
-          all
-            .filter((s) => s.category === (category as Category))
+          inCategory
             .map((s) => s.subcategory)
             .filter((v): v is string => !!v),
         ),
+      ).sort(),
+    [inCategory],
+  );
+
+  const colors = useMemo(
+    () => attributeValues(inCategory, "Color"),
+    [inCategory],
+  );
+  const clarities = useMemo(
+    () => attributeValues(inCategory, "Clarity"),
+    [inCategory],
+  );
+
+  const items = useMemo(
+    () =>
+      applyListing(
+        all,
+        {
+          category: category as Category,
+          subcategory: search.sub,
+          color: search.color,
+          clarity: search.clarity,
+          minPriceCents: search.minPrice ? search.minPrice * 100 : undefined,
+          maxPriceCents: search.maxPrice ? search.maxPrice * 100 : undefined,
+        },
+        (search.sort ?? "newest") as ListingSort,
       ),
-    [all, category],
+    [all, category, search],
   );
 
   const setSearch = (next: Partial<ListingSearch>) => {
@@ -91,6 +111,7 @@ export const CategoryListing = ({ category, search, inert = false }: Props) => {
                 onValueChange={(v) =>
                   setSearch({ sort: v as ListingSearch["sort"] })
                 }
+                disabled={inert}
               >
                 <SelectTrigger className="w-48">
                   <SelectValue />
@@ -119,6 +140,7 @@ export const CategoryListing = ({ category, search, inert = false }: Props) => {
                       >
                         <Checkbox
                           checked={search.sub === sub}
+                          disabled={inert}
                           onCheckedChange={(v) =>
                             setSearch({ sub: v ? sub : undefined })
                           }
@@ -134,6 +156,54 @@ export const CategoryListing = ({ category, search, inert = false }: Props) => {
                   Filters
                 </p>
                 <div className="mt-3 space-y-3">
+                  {colors.length > 0 && (
+                    <div>
+                      <Label htmlFor="filter-color">Color</Label>
+                      <Select
+                        value={search.color ?? "all"}
+                        onValueChange={(v) =>
+                          setSearch({ color: v === "all" ? undefined : v })
+                        }
+                        disabled={inert}
+                      >
+                        <SelectTrigger id="filter-color" className="mt-1">
+                          <SelectValue placeholder="Any color" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Any color</SelectItem>
+                          {colors.map((c) => (
+                            <SelectItem key={c} value={c}>
+                              {c}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                  {clarities.length > 0 && (
+                    <div>
+                      <Label htmlFor="filter-clarity">Clarity</Label>
+                      <Select
+                        value={search.clarity ?? "all"}
+                        onValueChange={(v) =>
+                          setSearch({ clarity: v === "all" ? undefined : v })
+                        }
+                        disabled={inert}
+                      >
+                        <SelectTrigger id="filter-clarity" className="mt-1">
+                          <SelectValue placeholder="Any clarity" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Any clarity</SelectItem>
+                          {clarities.map((c) => (
+                            <SelectItem key={c} value={c}>
+                              {c}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                   <div>
                     <Label htmlFor="price-min">Price Range</Label>
                     <div className="mt-1 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
@@ -142,6 +212,7 @@ export const CategoryListing = ({ category, search, inert = false }: Props) => {
                         placeholder="Min"
                         inputMode="numeric"
                         defaultValue={search.minPrice ?? ""}
+                        disabled={inert}
                         onBlur={(e) =>
                           setSearch({
                             minPrice: e.target.value
@@ -155,6 +226,7 @@ export const CategoryListing = ({ category, search, inert = false }: Props) => {
                         placeholder="Max"
                         inputMode="numeric"
                         defaultValue={search.maxPrice ?? ""}
+                        disabled={inert}
                         onBlur={(e) =>
                           setSearch({
                             maxPrice: e.target.value
@@ -180,6 +252,7 @@ export const CategoryListing = ({ category, search, inert = false }: Props) => {
                       specimen={s}
                       rating={RATINGS[i % RATINGS.length]}
                       variant="grid"
+                      listingSearch={search}
                     />
                   ))}
               {!isLoading && items.length === 0 && (
