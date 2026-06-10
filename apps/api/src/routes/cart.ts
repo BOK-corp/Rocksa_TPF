@@ -18,7 +18,7 @@ cartRouter.get("/", async (c) => {
     })
     .from(cartItems)
     .innerJoin(specimens, eq(specimens.slug, cartItems.specimenSlug))
-    .where(eq(cartItems.userUid, user.uid));
+    .where(eq(cartItems.userId, user.id));
   return c.json({
     items: rows.map((r) => ({
       specimenId: r.specimenSlug,
@@ -41,11 +41,11 @@ cartRouter.put("/", async (c) => {
   const user = c.get("user");
   const body = upsertBody.parse(await c.req.json());
 
-  await db.delete(cartItems).where(eq(cartItems.userUid, user.uid));
+  await db.delete(cartItems).where(eq(cartItems.userId, user.id));
   const rows = body.items
     .filter((i) => i.qty > 0)
     .map((i) => ({
-      userUid: user.uid,
+      userId: user.id,
       specimenSlug: i.specimenId,
       qty: i.qty,
     }));
@@ -59,7 +59,7 @@ cartRouter.delete("/items/:slug", async (c) => {
   await db
     .delete(cartItems)
     .where(
-      and(eq(cartItems.userUid, user.uid), eq(cartItems.specimenSlug, slug)),
+      and(eq(cartItems.userId, user.id), eq(cartItems.specimenSlug, slug)),
     );
   return c.json({ ok: true });
 });

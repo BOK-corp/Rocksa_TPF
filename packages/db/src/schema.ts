@@ -36,7 +36,8 @@ export const specimens = pgTable(
 );
 
 export const users = pgTable("users", {
-  uid: text("uid").primaryKey(), // Firebase Auth UID
+  id: uuid("id").primaryKey().defaultRandom(),
+  firebaseUid: text("firebase_uid").notNull().unique(),
   email: text("email").notNull(),
   fullName: text("full_name"),
   role: text("role").notNull().default("buyer"),
@@ -48,9 +49,9 @@ export const users = pgTable("users", {
 export const cartItems = pgTable(
   "cart_items",
   {
-    userUid: text("user_uid")
+    userId: uuid("user_id")
       .notNull()
-      .references(() => users.uid, { onDelete: "cascade" }),
+      .references(() => users.id, { onDelete: "cascade" }),
     specimenSlug: text("specimen_slug")
       .notNull()
       .references(() => specimens.slug, { onDelete: "cascade" }),
@@ -60,15 +61,15 @@ export const cartItems = pgTable(
       .defaultNow(),
   },
   (t) => ({
-    pk: primaryKey({ columns: [t.userUid, t.specimenSlug] }),
+    pk: primaryKey({ columns: [t.userId, t.specimenSlug] }),
   }),
 );
 
 export const orders = pgTable("orders", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userUid: text("user_uid")
+  userId: uuid("user_id")
     .notNull()
-    .references(() => users.uid, { onDelete: "cascade" }),
+    .references(() => users.id, { onDelete: "cascade" }),
   reference: text("reference").notNull(),
   status: text("status").notNull().default("pending_payment"),
   subtotalCents: integer("subtotal_cents").notNull(),
