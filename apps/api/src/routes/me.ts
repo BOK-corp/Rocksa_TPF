@@ -17,8 +17,10 @@ const syncBody = z.object({
 
 meRouter.post("/sync", async (c) => {
   const token = bearerToken(c.req.header("authorization"));
+  console.log("token present:", !!token);
   if (!token) return c.json({ error: "unauthorized" }, 401);
   const decoded = await verifyIdToken(token);
+  console.log("decoded:", decoded);
   if (!decoded?.email) return c.json({ error: "invalid token" }, 401);
 
   const body = syncBody.safeParse(await c.req.json().catch(() => ({})));

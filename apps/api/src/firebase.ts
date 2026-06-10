@@ -61,6 +61,8 @@ const decodeUnverified = (token: string): DecodedToken | null => {
 export const verifyIdToken = async (
   token: string,
 ): Promise<DecodedToken | null> => {
+  console.log("EMULATOR_HOST:", JSON.stringify(env.FIREBASE_AUTH_EMULATOR_HOST));
+  console.log("token prefix:", token.slice(0, 20));
   if (env.FIREBASE_AUTH_EMULATOR_HOST) return decodeUnverified(token);
   try {
     const auth = await firebaseAuth();
@@ -70,7 +72,8 @@ export const verifyIdToken = async (
       email: decoded.email ?? null,
       name: decoded.name ?? null,
     };
-  } catch {
+  } catch (e) {
+    console.error("verifyIdToken error:", e);
     return null;
   }
 };
