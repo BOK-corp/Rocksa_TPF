@@ -1,5 +1,7 @@
 {
   "rules": {
-    "no-unused-vars": "error"
+    "no-floating-promises": "error",
+    "no-unused-vars": "error",
+    "react-hooks": "error"
   }
 }

@@ -1,12 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button, Card, CardBody, Separator } from "@rocksa/ui";
 import { WorkspaceLayout } from "../../components/WorkspaceLayout.tsx";
-import {
-  ArrowRightIcon,
-  DocIcon,
-  PlusIcon,
-  VaultIcon,
-} from "../../components/Icons.tsx";
+import { ArrowRightIcon, DocIcon, PlusIcon, VaultIcon } from "../../components/Icons.tsx";
 
 export const Route = createFileRoute("/workspace/reports")({ component: Reports });
 
@@ -39,7 +34,8 @@ function Reports() {
           <div>
             <h1 className="font-display text-5xl">Document Vault</h1>
             <p className="text-ink-500 mt-1 max-w-xl">
-              Generate, schedule, and review highly detailed curator reports for the gemstone collection.
+              Generate, schedule, and review highly detailed curator reports for the gemstone
+              collection.
             </p>
           </div>
           <Button variant="secondary">⚙ Export Settings</Button>
@@ -58,9 +54,7 @@ function Reports() {
                   <p className="text-sm text-ink-500">{g.body}</p>
                   <Separator />
                   <div className="flex items-center justify-between">
-                    <p className="text-xs uppercase tracking-wider text-brand-600">
-                      {g.eta}
-                    </p>
+                    <p className="text-xs uppercase tracking-wider text-brand-600">{g.eta}</p>
                     <button className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-brand-600 text-white">
                       <ArrowRightIcon className="h-4 w-4" />
                     </button>
@@ -97,9 +91,8 @@ function Reports() {
               </span>
               <h3 className="font-display text-2xl">Tax Compliance</h3>
               <p className="text-sm text-ink-500 max-w-md">
-                Generate specialized reports formatted for cross-border transit,
-                import/export duties, and capital gains assessment for
-                high-value mineral assets.
+                Generate specialized reports formatted for cross-border transit, import/export
+                duties, and capital gains assessment for high-value mineral assets.
               </p>
               <Button className="self-start">Generate Report ⚡</Button>
             </CardBody>

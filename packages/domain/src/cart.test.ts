@@ -20,9 +20,7 @@ const specimen = (id: string, priceCents: number): Specimen => ({
 describe("cart", () => {
   it("adds a new item", () => {
     const items = addItem([], specimen("a", 1000));
-    expect(items).toEqual([
-      { specimenId: "a", qty: 1, unitPriceCents: 1000 },
-    ]);
+    expect(items).toEqual([{ specimenId: "a", qty: 1, unitPriceCents: 1000 }]);
   });
 
   it("increments qty when adding existing", () => {
@@ -35,18 +33,12 @@ describe("cart", () => {
   });
 
   it("removes item when setQty <= 0", () => {
-    const items = setQty(
-      [{ specimenId: "a", qty: 1, unitPriceCents: 1000 }],
-      "a",
-      0,
-    );
+    const items = setQty([{ specimenId: "a", qty: 1, unitPriceCents: 1000 }], "a", 0);
     expect(items).toEqual([]);
   });
 
   it("removes item by id", () => {
-    expect(
-      removeItem([{ specimenId: "a", qty: 1, unitPriceCents: 1000 }], "a"),
-    ).toEqual([]);
+    expect(removeItem([{ specimenId: "a", qty: 1, unitPriceCents: 1000 }], "a")).toEqual([]);
   });
 
   it("computes subtotal", () => {

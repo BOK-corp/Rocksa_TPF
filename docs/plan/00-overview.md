@@ -28,21 +28,21 @@ Two parallel experiences share one app:
 
 ## Stack
 
-| Concern        | Choice                                    |
-| -------------- | ----------------------------------------- |
-| Runtime        | Bun                                       |
-| Bundler / dev  | Vite                                      |
-| Framework      | React 19 + TypeScript                     |
-| Routing        | TanStack Router (file-based)              |
-| Styling        | TailwindCSS v4 (CSS-first config)         |
-| UI primitives  | shadcn-style, customized for Rocksa tokens|
-| DB             | PostgreSQL                                |
-| ORM            | Drizzle ORM + drizzle-kit                 |
-| Auth           | Firebase Auth (Email/Password + Google/Apple) |
-| Tests          | Vitest + Testing Library                  |
-| Lint / Format  | Oxlint + oxfmt                            |
-| CI             | GitHub Actions                            |
-| Monorepo       | Bun workspaces, TanStack-style layout     |
+| Concern       | Choice                                        |
+| ------------- | --------------------------------------------- |
+| Runtime       | Bun                                           |
+| Bundler / dev | Vite                                          |
+| Framework     | React 19 + TypeScript                         |
+| Routing       | TanStack Router (file-based)                  |
+| Styling       | TailwindCSS v4 (CSS-first config)             |
+| UI primitives | shadcn-style, customized for Rocksa tokens    |
+| DB            | PostgreSQL                                    |
+| ORM           | Drizzle ORM + drizzle-kit                     |
+| Auth          | Firebase Auth (Email/Password + Google/Apple) |
+| Tests         | Vitest + Testing Library                      |
+| Lint / Format | Oxlint + oxfmt                                |
+| CI            | GitHub Actions                                |
+| Monorepo      | Bun workspaces, TanStack-style layout         |
 
 ## Repo layout
 

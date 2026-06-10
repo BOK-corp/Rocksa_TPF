@@ -1,11 +1,4 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import { orderReference, type CartItem } from "@rocksa/domain";
 import { useAuth } from "@rocksa/auth";
 import { createServerOrder } from "../data/api-orders.ts";
@@ -37,9 +30,7 @@ interface OrderContextValue {
   info: CheckoutInfo;
   setInfo: (next: Partial<CheckoutInfo>) => void;
   lastOrder: Order | null;
-  createOrder: (
-    params: Omit<Order, "id" | "reference" | "createdAt">,
-  ) => Promise<Order>;
+  createOrder: (params: Omit<Order, "id" | "reference" | "createdAt">) => Promise<Order>;
 }
 
 const OrderContext = createContext<OrderContextValue | null>(null);
@@ -50,15 +41,12 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
 
   const setInfo = useCallback(
-    (next: Partial<CheckoutInfo>) =>
-      setInfoState((prev) => ({ ...prev, ...next })),
+    (next: Partial<CheckoutInfo>) => setInfoState((prev) => ({ ...prev, ...next })),
     [],
   );
 
   const createOrder = useCallback(
-    async (
-      params: Omit<Order, "id" | "reference" | "createdAt">,
-    ): Promise<Order> => {
+    async (params: Omit<Order, "id" | "reference" | "createdAt">): Promise<Order> => {
       if (status === "authed" && user) {
         const server = await createServerOrder(params);
         if (server) {

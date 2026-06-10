@@ -15,11 +15,7 @@ export const upsertUser = async (
   email: string,
   name: string | null,
 ): Promise<AuthUser> => {
-  const existing = await db
-    .select()
-    .from(users)
-    .where(eq(users.uid, uid))
-    .limit(1);
+  const existing = await db.select().from(users).where(eq(users.uid, uid)).limit(1);
   if (existing[0]) {
     return {
       uid: existing[0].uid,
@@ -27,10 +23,7 @@ export const upsertUser = async (
       role: existing[0].role,
     };
   }
-  const inserted = await db
-    .insert(users)
-    .values({ uid, email, fullName: name })
-    .returning();
+  const inserted = await db.insert(users).values({ uid, email, fullName: name }).returning();
   const row = inserted[0]!;
   return { uid: row.uid, email: row.email, role: row.role };
 };

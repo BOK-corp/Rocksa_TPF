@@ -27,8 +27,8 @@
     "test:watch": "vitest",
     "lint": "oxlint .",
     "fmt": "oxfmt .",
-    "fmt:check": "oxfmt --check ."
-  }
+    "fmt:check": "oxfmt --check .",
+  },
 }
 ```
 

@@ -1,11 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import {
-  DiamondIcon,
-  TriangleIcon,
-  VolcanoIcon,
-  DocIcon,
-  ChartIcon,
-} from "./Icons.tsx";
+import { DiamondIcon, TriangleIcon, VolcanoIcon, DocIcon, ChartIcon } from "./Icons.tsx";
 
 const ICONS: Record<string, typeof DiamondIcon> = {
   igneous: VolcanoIcon,
@@ -45,9 +39,7 @@ export const CategorySidebar = ({
     <aside className="w-60 shrink-0 border-r border-ink-700/5 bg-surface-muted p-6">
       <div className="mb-8">
         <p className="font-display text-xl text-ink-900">{heading}</p>
-        <p className="text-xs uppercase tracking-wider text-ink-500 mt-1">
-          {subheading}
-        </p>
+        <p className="text-xs uppercase tracking-wider text-ink-500 mt-1">{subheading}</p>
       </div>
       <nav className="space-y-1">
         {ITEMS.map((it) => {
@@ -61,9 +53,7 @@ export const CategorySidebar = ({
               params={{ category: it.slug }}
               className={
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors " +
-                (active
-                  ? "bg-brand-600 text-white"
-                  : "text-ink-700 hover:bg-brand-50")
+                (active ? "bg-brand-600 text-white" : "text-ink-700 hover:bg-brand-50")
               }
             >
               <Icon className="h-4 w-4" />
@@ -80,9 +70,7 @@ export const CategorySidebar = ({
               to={it.to}
               className={
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors " +
-                (active
-                  ? "bg-brand-600 text-white"
-                  : "text-ink-700 hover:bg-brand-50")
+                (active ? "bg-brand-600 text-white" : "text-ink-700 hover:bg-brand-50")
               }
             >
               <Icon className="h-4 w-4" />
