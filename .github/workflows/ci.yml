@@ -85,6 +85,13 @@ jobs:
       - name: Debug API health
         run: curl -v http://localhost:8787/health
 
+      - name: Debug sync endpoint
+        run: |
+          curl -v -X POST http://localhost:8787/v1/me/sync \
+            -H "Authorization: Bearer fake-token" \
+            -H "Content-Type: application/json" \
+            -d '{}'
+
       - name: Run tests
         run: bun test
 
