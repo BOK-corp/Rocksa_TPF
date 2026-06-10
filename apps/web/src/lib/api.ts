@@ -1,8 +1,6 @@
 import { firebaseAuth } from "@rocksa/auth";
 
-const BASE =
-  (import.meta.env["VITE_API_URL"] as string | undefined) ??
-  "http://localhost:8787";
+const BASE = (import.meta.env["VITE_API_URL"] as string | undefined) ?? "http://localhost:8787";
 
 const getToken = async (): Promise<string | null> => {
   const u = firebaseAuth.currentUser;
@@ -10,7 +8,10 @@ const getToken = async (): Promise<string | null> => {
 };
 
 export class ApiError extends Error {
-  constructor(public status: number, message: string) {
+  constructor(
+    public status: number,
+    message: string,
+  ) {
     super(message);
   }
 }
@@ -40,10 +41,7 @@ export const api = async <T>(path: string, opts: Options = {}): Promise<T> => {
   return (await res.json()) as T;
 };
 
-export const apiOptional = async <T>(
-  path: string,
-  opts: Options = {},
-): Promise<T | null> => {
+export const apiOptional = async <T>(path: string, opts: Options = {}): Promise<T | null> => {
   try {
     return await api<T>(path, opts);
   } catch {

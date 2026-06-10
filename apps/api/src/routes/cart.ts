@@ -58,8 +58,6 @@ cartRouter.delete("/items/:slug", async (c) => {
   const slug = c.req.param("slug");
   await db
     .delete(cartItems)
-    .where(
-      and(eq(cartItems.userUid, user.uid), eq(cartItems.specimenSlug, slug)),
-    );
+    .where(and(eq(cartItems.userUid, user.uid), eq(cartItems.specimenSlug, slug)));
   return c.json({ ok: true });
 });

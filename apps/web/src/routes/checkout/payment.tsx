@@ -59,9 +59,7 @@ function Payment() {
         <form onSubmit={submit} className="space-y-6">
           <div>
             <h1 className="font-display text-4xl">Secure Payment</h1>
-            <p className="text-ink-500 mt-1">
-              All transactions are encrypted and secured.
-            </p>
+            <p className="text-ink-500 mt-1">All transactions are encrypted and secured.</p>
           </div>
 
           <Tabs defaultValue="card">
@@ -105,8 +103,7 @@ function Payment() {
               <Card>
                 <CardBody>
                   <p className="text-sm text-ink-700">
-                    A senior curator will contact you with wire instructions
-                    within 1 business day.
+                    A senior curator will contact you with wire instructions within 1 business day.
                   </p>
                 </CardBody>
               </Card>
@@ -140,9 +137,7 @@ function Payment() {
                     <p className="text-xs text-ink-500">
                       {Object.values(firstSpecimen.attributes).slice(0, 2).join(", ")}
                     </p>
-                    <p className="font-display text-lg">
-                      {formatPrice(firstSpecimen.priceCents)}
-                    </p>
+                    <p className="font-display text-lg">{formatPrice(firstSpecimen.priceCents)}</p>
                   </div>
                 </div>
               )}
@@ -166,12 +161,7 @@ function Payment() {
                   {formatPrice(subtotalCents)}
                 </span>
               </div>
-              <Button
-                onClick={(e) => void submit(e)}
-                className="w-full"
-                size="lg"
-                type="button"
-              >
+              <Button onClick={(e) => void submit(e)} className="w-full" size="lg" type="button">
                 <LockIcon className="h-4 w-4" /> Complete Purchase
               </Button>
               <p className="flex items-center justify-center gap-1 text-xs text-ink-500">

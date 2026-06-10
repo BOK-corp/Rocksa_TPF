@@ -1,24 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import {
-  Badge,
-  Button,
-  Card,
-  CardBody,
-  Dialog,
-  DialogContent,
-  Separator,
-} from "@rocksa/ui";
+import { Badge, Button, Card, CardBody, Dialog, DialogContent, Separator } from "@rocksa/ui";
 import { formatPrice } from "@rocksa/domain";
 import { useSpecimen } from "../../../../data/api-specimens.ts";
-import {
-  CloseIcon,
-  ShareIcon,
-  ShieldIcon,
-} from "../../../../components/Icons.tsx";
-import {
-  CategoryListing,
-  type ListingSearch,
-} from "../../../../components/CategoryListing.tsx";
+import { CloseIcon, ShareIcon, ShieldIcon } from "../../../../components/Icons.tsx";
+import { CategoryListing, type ListingSearch } from "../../../../components/CategoryListing.tsx";
 import { TopNav } from "../../../../components/TopNav.tsx";
 import { useCart } from "../../../../state/cart.tsx";
 
@@ -42,9 +27,7 @@ function ProductRoute() {
 
   if (isLoading) {
     return (
-      <main className="min-h-screen flex items-center justify-center text-ink-500">
-        Loading…
-      </main>
+      <main className="min-h-screen flex items-center justify-center text-ink-500">Loading…</main>
     );
   }
 
@@ -89,26 +72,18 @@ function ProductRoute() {
       <div className="space-y-5">
         <div className="flex items-center gap-2 text-xs">
           <Badge tone="neutral">SAP-{specimen.id.padStart(4, "0")}</Badge>
-          <Badge
-            tone={specimen.stockStatus === "in_stock" ? "success" : "warning"}
-          >
+          <Badge tone={specimen.stockStatus === "in_stock" ? "success" : "warning"}>
             ● {specimen.stockStatus.replace("_", " ").toUpperCase()}
           </Badge>
         </div>
         <h2 className="font-display text-4xl leading-tight">{specimen.name}</h2>
         <div className="flex items-baseline gap-3">
-          <p className="font-display text-3xl text-brand-600">
-            {formatPrice(specimen.priceCents)}
-          </p>
+          <p className="font-display text-3xl text-brand-600">{formatPrice(specimen.priceCents)}</p>
           {specimen.compareAtCents && (
-            <p className="text-ink-400 line-through">
-              {formatPrice(specimen.compareAtCents)}
-            </p>
+            <p className="text-ink-400 line-through">{formatPrice(specimen.compareAtCents)}</p>
           )}
         </div>
-        <p className="text-sm text-ink-700 leading-relaxed">
-          {specimen.description}
-        </p>
+        <p className="text-sm text-ink-700 leading-relaxed">{specimen.description}</p>
         <Separator />
         <div className="flex gap-3">
           <Button className="flex-1" onClick={() => add(specimen)}>
@@ -148,15 +123,10 @@ function ProductRoute() {
   );
 
   if (modal) {
-    const close = () =>
-      navigate({ to: "/c/$category", params: { category }, search: {} });
+    const close = () => navigate({ to: "/c/$category", params: { category }, search: {} });
     return (
       <>
-        <CategoryListing
-          category={category}
-          search={{} as ListingSearch}
-          inert
-        />
+        <CategoryListing category={category} search={{} as ListingSearch} inert />
         <Dialog open onOpenChange={(open) => !open && close()}>
           <DialogContent className="max-h-[90vh] w-[92vw] overflow-y-auto">
             <button
@@ -177,11 +147,7 @@ function ProductRoute() {
     <div>
       <TopNav />
       <div className="mx-auto max-w-6xl p-10">
-        <Link
-          to="/c/$category"
-          params={{ category }}
-          className="text-sm text-brand-600"
-        >
+        <Link to="/c/$category" params={{ category }} className="text-sm text-brand-600">
           ← Back to {category}
         </Link>
         <div className="mt-6">{body}</div>

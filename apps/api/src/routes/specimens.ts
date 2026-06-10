@@ -15,11 +15,7 @@ specimensRouter.get("/", async (c) => {
 
 specimensRouter.get("/:slug", async (c) => {
   const slug = c.req.param("slug");
-  const row = await db
-    .select()
-    .from(specimens)
-    .where(eq(specimens.slug, slug))
-    .limit(1);
+  const row = await db.select().from(specimens).where(eq(specimens.slug, slug)).limit(1);
   if (!row[0]) return c.json({ error: "not found" }, 404);
   return c.json({ item: row[0] });
 });

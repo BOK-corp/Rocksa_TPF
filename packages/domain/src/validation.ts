@@ -12,10 +12,7 @@ export const validatePassword = (input: string): Result<string> =>
     ? { ok: true, value: input }
     : { ok: false, error: "Password must be at least 8 characters." };
 
-export const validateRequired = (
-  label: string,
-  input: string,
-): Result<string> =>
+export const validateRequired = (label: string, input: string): Result<string> =>
   input.trim().length > 0
     ? { ok: true, value: input.trim() }
     : { ok: false, error: `${label} is required.` };
