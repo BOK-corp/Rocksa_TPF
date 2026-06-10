@@ -1,7 +1,22 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
-import { orderReference, type CartItem } from "@rocksa/domain";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import { orderReference, type CartItem, type PaymentMethod } from "@rocksa/domain";
 import { useAuth } from "@rocksa/auth";
 import { createServerOrder } from "../data/api-orders.ts";
+import {
+  clearCheckoutSession,
+  readStoredCheckoutInfo,
+  readStoredPaymentInfo,
+  writeStoredCheckoutInfo,
+  writeStoredPaymentInfo,
+} from "../lib/checkout-storage.ts";
 
 export interface CheckoutInfo {
   email?: string;
@@ -14,6 +29,14 @@ export interface CheckoutInfo {
   postal?: string;
   phone?: string;
   delivery?: "standard" | "express";
+}
+
+export interface PaymentInfo {
+  method: PaymentMethod;
+  cardholderName?: string;
+  cardNumber?: string;
+  expiration?: string;
+  cvc?: string;
 }
 
 export interface Order {
@@ -29,21 +52,54 @@ export interface Order {
 interface OrderContextValue {
   info: CheckoutInfo;
   setInfo: (next: Partial<CheckoutInfo>) => void;
+  payment: PaymentInfo;
+  setPayment: (next: Partial<PaymentInfo>) => void;
   lastOrder: Order | null;
-  createOrder: (params: Omit<Order, "id" | "reference" | "createdAt">) => Promise<Order>;
+  createOrder: (
+    params: Omit<Order, "id" | "reference" | "createdAt">,
+  ) => Promise<Order>;
+  clearCheckout: () => void;
 }
 
 const OrderContext = createContext<OrderContextValue | null>(null);
 
 export const OrderProvider = ({ children }: { children: ReactNode }) => {
   const { user, status } = useAuth();
-  const [info, setInfoState] = useState<CheckoutInfo>({ delivery: "standard" });
+  const [info, setInfoState] = useState<CheckoutInfo>(() => readStoredCheckoutInfo());
+  const [payment, setPaymentState] = useState<PaymentInfo>(() =>
+    readStoredPaymentInfo(),
+  );
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
 
-  const setInfo = useCallback(
-    (next: Partial<CheckoutInfo>) => setInfoState((prev) => ({ ...prev, ...next })),
-    [],
-  );
+  useEffect(() => {
+    writeStoredCheckoutInfo(info);
+  }, [info]);
+
+  useEffect(() => {
+    writeStoredPaymentInfo(payment);
+  }, [payment]);
+
+  const setInfo = useCallback((next: Partial<CheckoutInfo>) => {
+    setInfoState((prev) => {
+      const merged = { ...prev, ...next };
+      writeStoredCheckoutInfo(merged);
+      return merged;
+    });
+  }, []);
+
+  const setPayment = useCallback((next: Partial<PaymentInfo>) => {
+    setPaymentState((prev) => {
+      const merged = { ...prev, ...next };
+      writeStoredPaymentInfo(merged);
+      return merged;
+    });
+  }, []);
+
+  const clearCheckout = useCallback(() => {
+    clearCheckoutSession();
+    setInfoState({ delivery: "standard" });
+    setPaymentState({ method: "card" });
+  }, []);
 
   const createOrder = useCallback(
     async (params: Omit<Order, "id" | "reference" | "createdAt">): Promise<Order> => {
@@ -52,9 +108,9 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
         if (server) {
           const order: Order = { ...params, ...server };
           setLastOrder(order);
+          clearCheckout();
           return order;
         }
-        // fall through to local if API unreachable
       }
       const order: Order = {
         ...params,
@@ -63,14 +119,23 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
         createdAt: new Date().toISOString(),
       };
       setLastOrder(order);
+      clearCheckout();
       return order;
     },
-    [status, user],
+    [status, user, clearCheckout],
   );
 
   const value = useMemo(
-    () => ({ info, setInfo, lastOrder, createOrder }),
-    [info, setInfo, lastOrder, createOrder],
+    () => ({
+      info,
+      setInfo,
+      payment,
+      setPayment,
+      lastOrder,
+      createOrder,
+      clearCheckout,
+    }),
+    [info, setInfo, payment, setPayment, lastOrder, createOrder, clearCheckout],
   );
 
   return <OrderContext.Provider value={value}>{children}</OrderContext.Provider>;
