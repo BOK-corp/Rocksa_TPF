@@ -5,6 +5,11 @@ const CARD_NUMBER_RE = /^\d{13,19}$/;
 const CARD_EXP_RE = /^(0[1-9]|1[0-2])\/\d{2}$/;
 const CARD_CVC_RE = /^\d{3,4}$/;
 const PHONE_RE = /^[\d\s()+-]{7,}$/;
+const POSTAL_RE = {
+  US: /^\d{5}(-\d{4})?$/,
+  CA: /^[A-Z]\d[A-Z][ -]?\d[A-Z]\d$/i,
+  GB: /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/i,
+} as const;
 
 export const normalizeInput = (input: string): string => input.trim();
 

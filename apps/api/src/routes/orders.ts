@@ -2,12 +2,7 @@ import { Hono } from "hono";
 import { and, desc, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@rocksa/db";
-import {
-  orderItems,
-  orders,
-  specimenAttrs,
-  specimens,
-} from "@rocksa/db/schema";
+import { orderItems, orders, specimens } from "@rocksa/db/schema";
 import { orderReference } from "@rocksa/domain";
 import { requireAuth, type AuthUser } from "../auth.ts";
 
@@ -17,65 +12,34 @@ ordersRouter.use("*", requireAuth);
 const createBody = z.object({
   items: z.array(
     z.object({
-      specimenId: z.string().uuid(),
+      specimenId: z.string(),
       qty: z.number().int().min(1),
     }),
   ),
   shippingCents: z.number().int().min(0).optional().default(0),
 });
 
-const specimenSnapshots = async (ids: string[]) => {
-  if (ids.length === 0) return new Map<string, Record<string, unknown>>();
-  const rows = await db
-    .select()
-    .from(specimens)
-    .where(inArray(specimens.id, ids));
-  const attrs = await db
-    .select()
-    .from(specimenAttrs)
-    .where(inArray(specimenAttrs.specimenId, ids));
-  const attrsById = new Map<string, Record<string, string>>();
-  for (const row of attrs) {
-    const current = attrsById.get(row.specimenId) ?? {};
-    current[row.key] = row.value;
-    attrsById.set(row.specimenId, current);
-  }
-  return new Map(
-    rows.map((row) => [
-      row.id,
-      {
-        id: row.id,
-        slug: row.slug,
-        name: row.name,
-        category: row.category,
-        subcategory: row.subcategory,
-        priceCents: row.priceCents,
-        imageUrl: row.imageUrl,
-        attributes: attrsById.get(row.id) ?? {},
-      },
-    ]),
-  );
-};
-
 ordersRouter.post("/", async (c) => {
   const user = c.get("user");
   const body = createBody.parse(await c.req.json());
 
-  const specimenIds = body.items.map((i) => i.specimenId);
-  const snapshots = await specimenSnapshots(specimenIds);
+  const slugs = body.items.map((i) => i.specimenId);
+  const rows = await db
+    .select()
+    .from(specimens)
+    .where(inArray(specimens.slug, slugs));
+  const bySlug = new Map(rows.map((r) => [r.slug, r]));
 
   let subtotal = 0;
   const lines = body.items
-    .filter((i) => snapshots.has(i.specimenId))
+    .filter((i) => bySlug.has(i.specimenId))
     .map((i) => {
-      const snapshot = snapshots.get(i.specimenId)!;
-      const unitPriceCents = snapshot.priceCents as number;
-      subtotal += unitPriceCents * i.qty;
+      const specimen = bySlug.get(i.specimenId)!;
+      subtotal += specimen.priceCents * i.qty;
       return {
-        specimenId: i.specimenId,
+        specimenSlug: i.specimenId,
         qty: i.qty,
-        unitPriceCents,
-        snapshotJson: snapshot,
+        unitPriceCents: specimen.priceCents,
       };
     });
 
@@ -120,10 +84,13 @@ ordersRouter.get("/:id", async (c) => {
   const row = await db
     .select()
     .from(orders)
-    .where(and(eq(orders.id, id), eq(orders.userId, user.id)))
+    .where(and(eq(orders.id, id), eq(orders.userUid, user.uid)))
     .limit(1);
   if (!row[0]) return c.json({ error: "not found" }, 404);
-  const items = await db.select().from(orderItems).where(eq(orderItems.orderId, id));
+  const items = await db
+    .select()
+    .from(orderItems)
+    .where(eq(orderItems.orderId, id));
   return c.json({ order: row[0], items });
 });
 
@@ -132,7 +99,7 @@ ordersRouter.get("/", async (c) => {
   const rows = await db
     .select()
     .from(orders)
-    .where(eq(orders.userId, user.id))
+    .where(eq(orders.userUid, user.uid))
     .orderBy(desc(orders.createdAt));
   return c.json({ orders: rows });
 });
