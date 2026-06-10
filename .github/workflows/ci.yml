@@ -1,46 +1,97 @@
-test:
-  needs: install
-  runs-on: ubuntu-latest
-  env:
-    FIREBASE_AUTH_EMULATOR_HOST: "127.0.0.1:9099"
-    DATABASE_URL: "postgres://rocksa:rocksa@localhost:5432/rocksa"
-  services:
-    postgres:
-      image: postgres:16
-      env:
-        POSTGRES_USER: rocksa
-        POSTGRES_PASSWORD: rocksa
-        POSTGRES_DB: rocksa
-      ports:
-        - 5432:5432
-      options: >-
-        --health-cmd pg_isready
-        --health-interval 10s
-        --health-timeout 5s
-        --health-retries 5
-  steps:
-    - uses: actions/checkout@v4
-    - uses: oven-sh/setup-bun@v2
-      with:
-        bun-version: 1.3.6
-    - run: bun install --frozen-lockfile
+name: CI
 
-    - name: Run migrations
-      run: bun --filter @rocksa/db migrate
-      env:
-        DATABASE_URL: "postgres://rocksa:rocksa@localhost:5432/rocksa"
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
-    - name: Install Firebase CLI
-      run: npm install -g firebase-tools
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.6
+      - run: bun install --frozen-lockfile
 
-    - name: Start Firebase Auth Emulator
-      run: firebase emulators:start --only auth --project rocksa-dev &
+  typecheck:
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.6
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
 
-    - name: Start API
-      run: FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 bun --filter @rocksa/api start &
+  lint:
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.6
+      - run: bun install --frozen-lockfile
+      - run: bunx oxlint .
 
-    - name: Wait for services
-      run: npx wait-on tcp:9099 tcp:8787 --timeout 30000
+  test:
+    needs: install
+    runs-on: ubuntu-latest
+    env:
+      FIREBASE_AUTH_EMULATOR_HOST: "127.0.0.1:9099"
+      DATABASE_URL: "postgres://rocksa:rocksa@localhost:5432/rocksa"
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: rocksa
+          POSTGRES_PASSWORD: rocksa
+          POSTGRES_DB: rocksa
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.6
+      - run: bun install --frozen-lockfile
 
-    - name: Run tests
-      run: bun test
+      - name: Run migrations
+        run: bun --filter @rocksa/db migrate
+        env:
+          DATABASE_URL: "postgres://rocksa:rocksa@localhost:5432/rocksa"
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Start Firebase Auth Emulator
+        run: firebase emulators:start --only auth --project rocksa-dev &
+
+      - name: Start API
+        run: FIREBASE_AUTH_EMULATOR_HOST=127.0.0.1:9099 bun --filter @rocksa/api start &
+
+      - name: Wait for services
+        run: npx wait-on tcp:9099 tcp:8787 --timeout 30000
+
+      - name: Run tests
+        run: bun test
+
+  build:
+    needs: [typecheck, lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.6
+      - run: bun install --frozen-lockfile
+      - run: bun --filter=@rocksa/web run build
