@@ -1,43 +1,94 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Button, Card, CardBody, Input, Label, Separator } from "@rocksa/ui";
-import { formatPrice } from "@rocksa/domain";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { Button, Input } from "@rocksa/ui";
 import { TopNav } from "../../components/TopNav.tsx";
+import { CheckoutStepper } from "../../components/checkout/CheckoutStepper.tsx";
+import { OrderSummary } from "../../components/checkout/OrderSummary.tsx";
+import {
+  checkoutInfoSchema,
+  type CheckoutInfoForm,
+} from "../../components/checkout/checkout-schemas.ts";
+import {
+  readStoredCartItems,
+  writeStoredCheckoutInfo,
+} from "../../lib/checkout-storage.ts";
 import { useCart } from "../../state/cart.tsx";
 import { useOrder } from "../../state/order.tsx";
-import { useSpecimenLookup } from "../../data/api-specimens.ts";
 
-export const Route = createFileRoute("/checkout/")({ component: Checkout });
+export const Route = createFileRoute("/checkout/")({
+  beforeLoad: () => {
+    if (readStoredCartItems().length === 0) {
+      throw redirect({ to: "/cart" });
+    }
+  },
+  component: Checkout,
+});
 
 function Checkout() {
-  const { items, subtotalCents } = useCart();
+  const { items } = useCart();
   const { info, setInfo } = useOrder();
   const navigate = useNavigate();
-  const findSpecimenById = useSpecimenLookup();
-  const firstItem = items[0];
-  const firstSpecimen = firstItem ? findSpecimenById(firstItem.specimenId) : null;
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<CheckoutInfoForm>({
+    resolver: zodResolver(checkoutInfoSchema),
+    defaultValues: {
+      email: info.email ?? "",
+      firstName: info.firstName ?? "",
+      lastName: info.lastName ?? "",
+      country: info.country ?? "",
+      address: info.address ?? "",
+      apartment: info.apartment ?? "",
+      city: info.city ?? "",
+      postal: info.postal ?? "",
+      phone: info.phone ?? "",
+      delivery: info.delivery ?? "standard",
+    },
+  });
+
+  const delivery = watch("delivery");
+
+  useEffect(() => {
+    const sub = watch((data) => writeStoredCheckoutInfo(data));
+    return () => sub.unsubscribe();
+  }, [watch]);
+
+  const onSubmit = (data: CheckoutInfoForm) => {
+    setInfo(data);
+    navigate({ to: "/checkout/payment" });
+  };
 
   return (
     <div>
       <TopNav variant="minimal" />
       <main className="mx-auto grid max-w-6xl gap-12 px-6 py-12 lg:grid-cols-[1fr_360px]">
-        <form
-          className="space-y-10"
-          onSubmit={(e) => {
-            e.preventDefault();
-            navigate({ to: "/checkout/payment" });
-          }}
-        >
-          <nav className="flex items-center gap-2 text-sm text-ink-500">
-            <Link to="/cart">Cart</Link>
-            <span>›</span>
-            <span className="font-medium text-brand-600 underline underline-offset-4">
-              Information
-            </span>
-            <span>›</span>
-            <span>Payment</span>
-            <span>›</span>
-            <span>Review</span>
-          </nav>
+        <form className="space-y-10" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <CheckoutStepper current="information" />
+
+          {errors.root && (
+            <p className="text-sm text-red-600" role="alert">
+              {errors.root.message}
+            </p>
+          )}
+          {Object.keys(errors).length > 0 && !errors.root && (
+            <p className="text-sm text-red-600" role="alert">
+              {errors.email?.message ??
+                errors.firstName?.message ??
+                errors.lastName?.message ??
+                errors.country?.message ??
+                errors.address?.message ??
+                errors.city?.message ??
+                errors.postal?.message ??
+                errors.phone?.message ??
+                "Please complete all required fields."}
+            </p>
+          )}
 
           <section>
             <div className="flex items-baseline justify-between">
@@ -54,8 +105,8 @@ function Checkout() {
                 variant="underline"
                 placeholder="Email address"
                 type="email"
-                value={info.email ?? ""}
-                onChange={(e) => setInfo({ email: e.target.value })}
+                autoComplete="email"
+                {...register("email")}
               />
               <label className="flex items-center gap-2 text-xs text-ink-700">
                 <input type="checkbox" /> Email me with news and exclusive offers
@@ -68,55 +119,56 @@ function Checkout() {
             <div className="mt-4 grid grid-cols-2 gap-4">
               <Input
                 variant="underline"
-                placeholder="United States"
+                placeholder="Country"
                 className="col-span-2"
-                value={info.country ?? ""}
-                onChange={(e) => setInfo({ country: e.target.value })}
+                autoComplete="country-name"
+                {...register("country")}
               />
               <Input
                 variant="underline"
                 placeholder="First name"
-                value={info.firstName ?? ""}
-                onChange={(e) => setInfo({ firstName: e.target.value })}
+                autoComplete="given-name"
+                {...register("firstName")}
               />
               <Input
                 variant="underline"
                 placeholder="Last name"
-                value={info.lastName ?? ""}
-                onChange={(e) => setInfo({ lastName: e.target.value })}
+                autoComplete="family-name"
+                {...register("lastName")}
               />
               <Input
                 variant="underline"
                 placeholder="Address"
                 className="col-span-2"
-                value={info.address ?? ""}
-                onChange={(e) => setInfo({ address: e.target.value })}
+                autoComplete="street-address"
+                {...register("address")}
               />
               <Input
                 variant="underline"
                 placeholder="Apartment, suite, etc. (optional)"
                 className="col-span-2"
-                value={info.apartment ?? ""}
-                onChange={(e) => setInfo({ apartment: e.target.value })}
+                autoComplete="address-line2"
+                {...register("apartment")}
               />
               <Input
                 variant="underline"
                 placeholder="City"
-                value={info.city ?? ""}
-                onChange={(e) => setInfo({ city: e.target.value })}
+                autoComplete="address-level2"
+                {...register("city")}
               />
               <Input
                 variant="underline"
                 placeholder="Postal code"
-                value={info.postal ?? ""}
-                onChange={(e) => setInfo({ postal: e.target.value })}
+                autoComplete="postal-code"
+                {...register("postal")}
               />
               <Input
                 variant="underline"
                 placeholder="Phone"
                 className="col-span-2"
-                value={info.phone ?? ""}
-                onChange={(e) => setInfo({ phone: e.target.value })}
+                type="tel"
+                autoComplete="tel"
+                {...register("phone")}
               />
             </div>
           </section>
@@ -131,8 +183,8 @@ function Checkout() {
                 <label
                   key={key}
                   className={
-                    "flex items-center justify-between rounded-md border p-4 cursor-pointer " +
-                    (info.delivery === key
+                    "flex cursor-pointer items-center justify-between rounded-md border p-4 " +
+                    (delivery === key
                       ? "border-brand-600 bg-brand-50/40"
                       : "border-ink-700/10 bg-white")
                   }
@@ -140,10 +192,9 @@ function Checkout() {
                   <div className="flex items-center gap-3">
                     <input
                       type="radio"
-                      name="delivery"
-                      checked={info.delivery === key}
-                      onChange={() => setInfo({ delivery: key })}
+                      value={key}
                       className="accent-brand-600"
+                      {...register("delivery")}
                     />
                     <div>
                       <p className="text-sm font-medium">{label}</p>
@@ -169,61 +220,7 @@ function Checkout() {
         </form>
 
         <aside>
-          <Card>
-            <CardBody className="space-y-4">
-              <h2 className="font-display text-2xl">Order Summary</h2>
-              {firstSpecimen && (
-                <div className="flex gap-3">
-                  <div className="relative h-16 w-16 overflow-hidden rounded-md bg-surface-soft">
-                    <img
-                      src={firstSpecimen.imageUrl}
-                      alt=""
-                      className="h-full w-full object-cover"
-                    />
-                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-ink-900 text-[10px] text-white">
-                      {firstItem?.qty}
-                    </span>
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-medium">{firstSpecimen.name}</p>
-                    <div className="mt-1 flex gap-2 text-xs">
-                      {Object.entries(firstSpecimen.attributes)
-                        .slice(0, 2)
-                        .map(([, v]) => (
-                          <span key={v} className="rounded bg-brand-50 px-1.5 py-0.5 text-brand-700">
-                            {v}
-                          </span>
-                        ))}
-                    </div>
-                  </div>
-                  <p className="text-sm">{formatPrice(firstItem!.unitPriceCents)}</p>
-                </div>
-              )}
-              <div className="flex items-center gap-2">
-                <Input placeholder="Gift card or discount code" />
-                <Button variant="secondary" size="sm">Apply</Button>
-              </div>
-              <Separator />
-              <div className="flex justify-between text-sm">
-                <span>Subtotal</span>
-                <span>{formatPrice(subtotalCents)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Shipping</span>
-                <span className="text-ink-500">Calculated at next step</span>
-              </div>
-              <Separator />
-              <div className="flex items-baseline justify-between">
-                <Label>Total</Label>
-                <p className="font-display text-3xl">
-                  <span className="text-xs uppercase tracking-wider text-ink-500 mr-2">
-                    USD
-                  </span>
-                  {formatPrice(subtotalCents)}
-                </p>
-              </div>
-            </CardBody>
-          </Card>
+          <OrderSummary items={items} info={{ ...info, delivery }} />
         </aside>
       </main>
     </div>
