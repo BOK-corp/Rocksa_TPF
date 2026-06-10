@@ -448,9 +448,24 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
   AuthResetRoute: AuthResetRoute,
-  CheckoutPaymentRoute: CheckoutPaymentRoute,
-  CheckoutReviewRoute: CheckoutReviewRoute,
-  OrdersOrderIdRoute: OrdersOrderIdRoute,
+}
+
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
+)
+
+interface WorkspaceRouteRouteChildren {
+  Workspace_layoutRoute: typeof Workspace_layoutRoute
+  WorkspaceAcquisitionsRoute: typeof WorkspaceAcquisitionsRoute
+  WorkspaceAnalyticsRoute: typeof WorkspaceAnalyticsRoute
+  WorkspaceInventoryRoute: typeof WorkspaceInventoryRoute
+  WorkspaceOverviewRoute: typeof WorkspaceOverviewRoute
+  WorkspaceReportsRoute: typeof WorkspaceReportsRoute
+  WorkspaceIndexRoute: typeof WorkspaceIndexRoute
+}
+
+const WorkspaceRouteRouteChildren: WorkspaceRouteRouteChildren = {
+  Workspace_layoutRoute: Workspace_layoutRoute,
   WorkspaceAcquisitionsRoute: WorkspaceAcquisitionsRoute,
   WorkspaceAnalyticsRoute: WorkspaceAnalyticsRoute,
   WorkspaceInventoryRoute: WorkspaceInventoryRoute,
@@ -470,6 +485,7 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   DevComponentsRoute: DevComponentsRoute,
   CheckoutPaymentRoute: CheckoutPaymentRoute,
+  CheckoutReviewRoute: CheckoutReviewRoute,
   OrdersOrderIdRoute: OrdersOrderIdRoute,
   CheckoutIndexRoute: CheckoutIndexRoute,
   CCategoryIndexRoute: CCategoryIndexRoute,
