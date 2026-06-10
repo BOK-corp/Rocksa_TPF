@@ -1,8 +1,13 @@
 import { Hono } from "hono";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@rocksa/db";
-import { orderItems, orders, specimens } from "@rocksa/db/schema";
+import {
+  orderItems,
+  orders,
+  specimenAttrs,
+  specimens,
+} from "@rocksa/db/schema";
 import { orderReference } from "@rocksa/domain";
 import { requireAuth, type AuthUser } from "../auth.ts";
 
@@ -12,36 +17,71 @@ ordersRouter.use("*", requireAuth);
 const createBody = z.object({
   items: z.array(
     z.object({
-      specimenId: z.string(),
+      specimenId: z.string().uuid(),
       qty: z.number().int().min(1),
     }),
   ),
 });
 
+const specimenSnapshots = async (ids: string[]) => {
+  if (ids.length === 0) return new Map<string, Record<string, unknown>>();
+  const rows = await db
+    .select()
+    .from(specimens)
+    .where(inArray(specimens.id, ids));
+  const attrs = await db
+    .select()
+    .from(specimenAttrs)
+    .where(inArray(specimenAttrs.specimenId, ids));
+  const attrsById = new Map<string, Record<string, string>>();
+  for (const row of attrs) {
+    const current = attrsById.get(row.specimenId) ?? {};
+    current[row.key] = row.value;
+    attrsById.set(row.specimenId, current);
+  }
+  return new Map(
+    rows.map((row) => [
+      row.id,
+      {
+        id: row.id,
+        slug: row.slug,
+        name: row.name,
+        category: row.category,
+        subcategory: row.subcategory,
+        priceCents: row.priceCents,
+        imageUrl: row.imageUrl,
+        attributes: attrsById.get(row.id) ?? {},
+      },
+    ]),
+  );
+};
+
 ordersRouter.post("/", async (c) => {
   const user = c.get("user");
   const body = createBody.parse(await c.req.json());
 
-  const rows = await db.select().from(specimens);
-  const priceBySlug = new Map(rows.map((r) => [r.slug, r.priceCents]));
+  const specimenIds = body.items.map((i) => i.specimenId);
+  const snapshots = await specimenSnapshots(specimenIds);
 
   let subtotal = 0;
   const lines = body.items
-    .filter((i) => priceBySlug.has(i.specimenId))
+    .filter((i) => snapshots.has(i.specimenId))
     .map((i) => {
-      const unitPriceCents = priceBySlug.get(i.specimenId) ?? 0;
+      const snapshot = snapshots.get(i.specimenId)!;
+      const unitPriceCents = snapshot.priceCents as number;
       subtotal += unitPriceCents * i.qty;
       return {
-        specimenSlug: i.specimenId,
+        specimenId: i.specimenId,
         qty: i.qty,
         unitPriceCents,
+        snapshotJson: snapshot,
       };
     });
 
   const inserted = await db
     .insert(orders)
     .values({
-      userUid: user.uid,
+      userId: user.id,
       reference: orderReference(),
       status: "pending_payment",
       subtotalCents: subtotal,
@@ -65,7 +105,7 @@ ordersRouter.get("/:id", async (c) => {
   const row = await db
     .select()
     .from(orders)
-    .where(and(eq(orders.id, id), eq(orders.userUid, user.uid)))
+    .where(and(eq(orders.id, id), eq(orders.userId, user.id)))
     .limit(1);
   if (!row[0]) return c.json({ error: "not found" }, 404);
   const items = await db
@@ -80,7 +120,7 @@ ordersRouter.get("/", async (c) => {
   const rows = await db
     .select()
     .from(orders)
-    .where(eq(orders.userUid, user.uid))
+    .where(eq(orders.userId, user.id))
     .orderBy(desc(orders.createdAt));
   return c.json({ orders: rows });
 });

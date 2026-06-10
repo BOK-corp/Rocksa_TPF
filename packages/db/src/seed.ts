@@ -1,9 +1,11 @@
 import { db, sql } from "./client.ts";
-import { specimens } from "./schema.ts";
+import { specimenAttrs, specimens } from "./schema.ts";
 
-type Seed = typeof specimens.$inferInsert;
+type SeedRow = typeof specimens.$inferInsert & {
+  attributes: Record<string, string>;
+};
 
-const DEMO: Seed[] = [
+const DEMO: SeedRow[] = [
   { slug: "clear-quartz-cluster", name: "Clear Quartz Cluster", category: "crystals", subcategory: "Quartz", description: "High-clarity specimen from the Swiss Alps, featuring multiple termination points.", priceCents: 14_500_00, originCountry: "Switzerland", imageUrl: "", attributes: { Color: "Clear", Clarity: "VVS", Carat: "85.00" } },
   { slug: "amethyst-geode-slice", name: "Amethyst Geode Slice", category: "crystals", subcategory: "Quartz", description: "Deep purple coloration with a distinct agate banding edge.", priceCents: 35_000_00, originCountry: "Uruguay", imageUrl: "", attributes: { Color: "Purple", Clarity: "VS", Carat: "1,240" } },
   { slug: "raw-aquamarine", name: "Raw Aquamarine", category: "crystals", subcategory: "Beryl", description: "Gem-quality Beryl crystal showing excellent natural hexagonal form.", priceCents: 85_000_00, originCountry: "Pakistan", imageUrl: "", attributes: { Color: "Blue", Clarity: "VVS", Carat: "412" } },
@@ -36,7 +38,21 @@ const DEMO: Seed[] = [
   { slug: "fossilized-wood-slab", name: "Fossilized Wood Slab", category: "sedimentary", description: "Cross-section slab preserving mineralized wood grain and texture.", priceCents: 2_400_00, originCountry: "USA", imageUrl: "", attributes: { Color: "Brown", Origin: "Petrified" } },
 ];
 
+await db.delete(specimenAttrs);
 await db.delete(specimens);
-await db.insert(specimens).values(DEMO);
+
+for (const { attributes, ...row } of DEMO) {
+  const inserted = await db.insert(specimens).values(row).returning();
+  const specimen = inserted[0]!;
+  const attrRows = Object.entries(attributes).map(([key, value]) => ({
+    specimenId: specimen.id,
+    key,
+    value,
+  }));
+  if (attrRows.length > 0) {
+    await db.insert(specimenAttrs).values(attrRows);
+  }
+}
+
 await sql.end();
 console.log(`✓ seeded ${DEMO.length} specimens`);
