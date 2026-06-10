@@ -2,7 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { Avatar, Button, Input } from "@rocksa/ui";
 import { useAuth } from "@rocksa/auth";
 import { BellIcon, CartIcon, HelpIcon, SearchIcon } from "./Icons.tsx";
-import { useCart } from "../state/cart.tsx";
+import { useCartCount } from "@rocksa/cart";
 
 interface Props {
   variant?: "full" | "minimal";
@@ -18,7 +18,7 @@ const initials = (name: string | null | undefined): string => {
 };
 
 export const TopNav = ({ variant = "full" }: Props) => {
-  const { count } = useCart();
+  const count = useCartCount();
   const { user, status, signOut } = useAuth();
   const navigate = useNavigate();
 

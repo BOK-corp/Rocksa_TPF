@@ -32,6 +32,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@rocksa/auth": "workspace:*",
+        "@rocksa/cart": "workspace:*",
         "@rocksa/domain": "workspace:*",
         "@rocksa/ui": "workspace:*",
         "@tanstack/react-query": "^5.59.20",
@@ -57,6 +58,17 @@
       "version": "0.0.0",
       "dependencies": {
         "firebase": "^12.11.0",
+      },
+      "peerDependencies": {
+        "react": "^19.0.0",
+      },
+    },
+    "packages/cart": {
+      "name": "@rocksa/cart",
+      "version": "0.0.0",
+      "dependencies": {
+        "@rocksa/auth": "workspace:*",
+        "@rocksa/domain": "workspace:*",
       },
       "peerDependencies": {
         "react": "^19.0.0",
@@ -429,6 +441,8 @@
     "@rocksa/api": ["@rocksa/api@workspace:apps/api"],
 
     "@rocksa/auth": ["@rocksa/auth@workspace:packages/auth"],
+
+    "@rocksa/cart": ["@rocksa/cart@workspace:packages/cart"],
 
     "@rocksa/db": ["@rocksa/db@workspace:packages/db"],
 

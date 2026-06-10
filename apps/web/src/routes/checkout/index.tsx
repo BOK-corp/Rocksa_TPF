@@ -2,14 +2,14 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Button, Card, CardBody, Input, Label, Separator } from "@rocksa/ui";
 import { formatPrice } from "@rocksa/domain";
 import { TopNav } from "../../components/TopNav.tsx";
-import { useCart } from "../../state/cart.tsx";
+import { useCart } from "@rocksa/cart";
 import { useOrder } from "../../state/order.tsx";
 import { useSpecimenLookup } from "../../data/api-specimens.ts";
 
 export const Route = createFileRoute("/checkout/")({ component: Checkout });
 
 function Checkout() {
-  const { items, subtotalCents } = useCart();
+  const { items, subtotal } = useCart();
   const { info, setInfo } = useOrder();
   const navigate = useNavigate();
   const findSpecimenById = useSpecimenLookup();
@@ -206,7 +206,7 @@ function Checkout() {
               <Separator />
               <div className="flex justify-between text-sm">
                 <span>Subtotal</span>
-                <span>{formatPrice(subtotalCents)}</span>
+                <span>{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span>Shipping</span>
@@ -219,7 +219,7 @@ function Checkout() {
                   <span className="text-xs uppercase tracking-wider text-ink-500 mr-2">
                     USD
                   </span>
-                  {formatPrice(subtotalCents)}
+                  {formatPrice(subtotal)}
                 </p>
               </div>
             </CardBody>

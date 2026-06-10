@@ -20,7 +20,7 @@ import {
   type ListingSearch,
 } from "../../../../components/CategoryListing.tsx";
 import { TopNav } from "../../../../components/TopNav.tsx";
-import { useCart } from "../../../../state/cart.tsx";
+import { useCart } from "@rocksa/cart";
 
 interface Search {
   modal?: boolean;
