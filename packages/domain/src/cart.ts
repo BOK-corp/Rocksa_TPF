@@ -27,8 +27,12 @@ export const removeItem = (items: ReadonlyArray<CartItem>, specimenId: string): 
 export const subtotal = (items: ReadonlyArray<CartItem>): number =>
   items.reduce((sum, i) => sum + i.unitPriceCents * i.qty, 0);
 
+export const cartSubtotal = subtotal;
+
 export const total = (
   subtotalCents: number,
   shippingCents: number = 0,
   taxesCents: number = 0,
 ): number => subtotalCents + shippingCents + taxesCents;
+
+export const cartTotal = total;
