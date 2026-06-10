@@ -54,10 +54,14 @@ jobs:
       - name: Start Firebase Auth Emulator
         run: firebase emulators:start --only auth &
 
-      - name: Wait for emulator on port 9099
-        run: npx wait-on tcp:9099 --timeout 30000
+      - name: Start API
+        run: bun run api &
 
-      - run: bun test
+      - name: Wait for services
+        run: npx wait-on tcp:9099 tcp:8787 --timeout 30000
+
+      - name: Run tests
+        run: bun test
 
   build:
     needs: [typecheck, lint, test]
