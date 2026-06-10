@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./tsconfig/base.json": "./tsconfig/base.json",
+    "./tsconfig.base.json": "./tsconfig.base.json",
     "./tailwind/preset.css": "./tailwind/preset.css",
     "./oxlint.json": "./oxlint.json"
   }
