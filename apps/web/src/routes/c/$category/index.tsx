@@ -1,14 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { CategoryListing, type ListingSearch } from "../../../components/CategoryListing.tsx";
+import { CategoryListing } from "../../../components/CategoryListing.tsx";
+import { specimensQueryOptions } from "../../../data/specimens-query.ts";
+import { parseListingSearch } from "../../../lib/listing-search.ts";
 
 export const Route = createFileRoute("/c/$category/")({
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(specimensQueryOptions),
+  validateSearch: parseListingSearch,
   component: CategoryPage,
-  validateSearch: (search: Record<string, unknown>): ListingSearch => ({
-    sub: typeof search["sub"] === "string" ? search["sub"] : undefined,
-    sort: search["sort"] as ListingSearch["sort"],
-    minPrice: search["minPrice"] ? Number(search["minPrice"]) : undefined,
-    maxPrice: search["maxPrice"] ? Number(search["maxPrice"]) : undefined,
-  }),
 });
 
 function CategoryPage() {
