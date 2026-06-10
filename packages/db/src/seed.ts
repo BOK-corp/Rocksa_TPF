@@ -1,8 +1,10 @@
+import { eq } from "drizzle-orm";
 import { db, sql } from "./client.ts";
 import {
   auditLog,
   orderItems,
   orders,
+  reports,
   shipments,
   specimens,
   users,
@@ -59,14 +61,19 @@ await db
   })
   .onConflictDoNothing();
 
+await db.delete(reports);
 await db.delete(auditLog);
 await db.delete(shipments);
 await db.delete(orderItems);
 await db.delete(orders);
 await db.delete(specimens);
 
-for (const row of DEMO) {
-  await db.insert(specimens).values(row);
+for (const [index, row] of DEMO.entries()) {
+  const monthsAgo = 24 - (index % 24);
+  await db.insert(specimens).values({
+    ...row,
+    createdAt: daysAgo(monthsAgo * 30),
+  });
 }
 
 const demoOrder = await db
@@ -143,6 +150,49 @@ const shipmentRows = [
 ] as const;
 
 await db.insert(shipments).values([...shipmentRows]);
+
+const seededReports = await db
+  .insert(reports)
+  .values([
+    {
+      userUid: "seed-curator",
+      kind: "financial_valuation",
+      title: "Q3_Valuation_Report_FINAL.pdf",
+      generatedAt: daysAgo(120),
+      fileSizeBytes: 2_400_000,
+    },
+    {
+      userUid: "seed-curator",
+      kind: "inventory_audit",
+      title: "Inventory_Audit_Sept.pdf",
+      generatedAt: daysAgo(140),
+      fileSizeBytes: 1_100_000,
+    },
+    {
+      userUid: "seed-curator",
+      kind: "tax_compliance",
+      title: "Tax_Compliance_2022_Review.pdf",
+      generatedAt: daysAgo(420),
+      fileSizeBytes: 4_700_000,
+    },
+    {
+      userUid: "seed-curator",
+      kind: "inventory_audit",
+      title: "Monthly Audit",
+      cronSchedule: "0 0 1 * *",
+      enabled: 1,
+    },
+  ])
+  .returning();
+
+for (const row of seededReports) {
+  if (!row.cronSchedule) {
+    await db
+      .update(reports)
+      .set({ fileUrl: `/v1/reports/${row.id}/download` })
+      .where(eq(reports.id, row.id));
+  }
+}
 
 await db.insert(auditLog).values([
   {

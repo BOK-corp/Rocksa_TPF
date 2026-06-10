@@ -107,6 +107,23 @@ export const shipments = pgTable("shipments", {
     .defaultNow(),
 });
 
+export const reports = pgTable("reports", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userUid: text("user_uid")
+    .notNull()
+    .references(() => users.uid, { onDelete: "cascade" }),
+  kind: text("kind").notNull(),
+  title: text("title").notNull(),
+  generatedAt: timestamp("generated_at", { withTimezone: true }),
+  fileUrl: text("file_url"),
+  fileSizeBytes: integer("file_size_bytes"),
+  cronSchedule: text("cron_schedule"),
+  enabled: integer("enabled").notNull().default(0),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
 export const auditLog = pgTable("audit_log", {
   id: uuid("id").primaryKey().defaultRandom(),
   actorUid: text("actor_uid").references(() => users.uid, {

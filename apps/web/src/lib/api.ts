@@ -48,3 +48,18 @@ export const apiOptional = async <T>(path: string, opts: Options = {}): Promise<
     return null;
   }
 };
+
+export const apiDownload = async (path: string, filename: string): Promise<void> => {
+  const headers: Record<string, string> = {};
+  const token = await getToken();
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const res = await fetch(`${BASE}${path}`, { headers });
+  if (!res.ok) throw new ApiError(res.status, `${res.status} ${res.statusText}`);
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+};

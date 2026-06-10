@@ -28,6 +28,11 @@ export const formatEta = (iso: string | null): string => {
   return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 };
 
+export const formatPct = (value: number): string => {
+  const sign = value > 0 ? "↗ +" : value < 0 ? "↘ " : "";
+  return `${sign}${Math.abs(value).toFixed(1)}%`;
+};
+
 export const formatRelativeTime = (iso: string): string => {
   const diffMs = Date.now() - new Date(iso).getTime();
   const hours = Math.floor(diffMs / (1000 * 60 * 60));

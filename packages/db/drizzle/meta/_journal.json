@@ -15,6 +15,13 @@
       "when": 1781088834752,
       "tag": "0001_workspace_inventory",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1781088834753,
+      "tag": "0002_workspace_analytics_reports",
+      "breakpoints": true
     }
   ]
 }

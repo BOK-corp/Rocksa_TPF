@@ -1,32 +1,61 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Button, Card, CardBody, Separator } from "@rocksa/ui";
+import { Button, Card, CardBody, Separator, Skeleton } from "@rocksa/ui";
 import { ArrowRightIcon, DocIcon, PlusIcon, VaultIcon } from "../../components/Icons.tsx";
 import { WorkspacePageHeader } from "../../components/WorkspacePageHeader.tsx";
+import {
+  downloadReport,
+  formatFileSize,
+  useGenerateReport,
+  useReports,
+  useToggleSchedule,
+  type ReportKind,
+} from "../../data/api-reports.ts";
 
 export const Route = createFileRoute("/workspace/reports")({ component: Reports });
 
-const GENERATORS = [
+const GENERATORS: Array<{
+  kind: ReportKind;
+  icon: typeof VaultIcon;
+  title: string;
+  body: string;
+  eta: string;
+}> = [
   {
+    kind: "financial_valuation",
     icon: VaultIcon,
     title: "Financial Valuation",
     body: "Comprehensive appraisal of current inventory based on real-time market data and historical acquisitions.",
     eta: "ESTIMATED 2 MINS",
   },
   {
+    kind: "inventory_audit",
     icon: DocIcon,
     title: "Inventory Audit",
     body: "Detailed ledger of all physical assets, including status changes, certification updates, and location tracking.",
     eta: "ESTIMATED 1 MIN",
   },
-];
-
-const LIBRARY = [
-  ["Q3_Valuation_Report_FINAL.pdf", "Oct 12, 2023 • 2.4 MB"],
-  ["Inventory_Audit_Sept.pdf", "Sep 30, 2023 • 1.1 MB"],
-  ["Tax_Compliance_2022_Review.pdf", "Jan 15, 2023 • 4.7 MB"],
+  {
+    kind: "tax_compliance",
+    icon: DocIcon,
+    title: "Tax Compliance",
+    body: "Generate specialized reports formatted for cross-border transit, import/export duties, and capital gains assessment.",
+    eta: "ESTIMATED 3 MINS",
+  },
 ];
 
 function Reports() {
+  const { data, isLoading, isError } = useReports();
+  const generate = useGenerateReport();
+  const toggle = useToggleSchedule();
+
+  const monthlySchedule = data?.schedules.find((s) =>
+    s.title.toLowerCase().includes("monthly"),
+  );
+
+  const onGenerate = (kind: ReportKind) => {
+    void generate.mutateAsync(kind);
+  };
+
   return (
     <div className="p-6 md:p-10">
       <WorkspacePageHeader
@@ -35,11 +64,17 @@ function Reports() {
         action={<Button variant="secondary">⚙ Export Settings</Button>}
       />
 
+      {isError && (
+        <p className="mt-6 text-sm text-ink-500">
+          Unable to load reports. Ensure the API is running.
+        </p>
+      )}
+
       <div className="mt-8 grid gap-4 lg:grid-cols-3">
-        {GENERATORS.map((g) => {
+        {GENERATORS.slice(0, 2).map((g) => {
           const Icon = g.icon;
           return (
-            <Card key={g.title}>
+            <Card key={g.kind}>
               <CardBody className="space-y-4">
                 <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-brand-50 text-brand-600">
                   <Icon />
@@ -48,8 +83,16 @@ function Reports() {
                 <p className="text-sm text-ink-500">{g.body}</p>
                 <Separator />
                 <div className="flex items-center justify-between">
-                  <p className="text-xs uppercase tracking-wider text-brand-600">{g.eta}</p>
-                  <button className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-brand-600 text-white">
+                  <p className="text-xs uppercase tracking-wider text-brand-600">
+                    {g.eta}
+                  </p>
+                  <button
+                    type="button"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-brand-600 text-white disabled:opacity-50"
+                    onClick={() => onGenerate(g.kind)}
+                    disabled={generate.isPending}
+                    aria-label={`Generate ${g.title}`}
+                  >
                     <ArrowRightIcon className="h-4 w-4" />
                   </button>
                 </div>
@@ -61,16 +104,45 @@ function Reports() {
         <Card>
           <CardBody className="space-y-4">
             <h3 className="font-display text-xl">📅 Scheduled Runs</h3>
-            <div className="flex items-center justify-between rounded-md border border-ink-700/5 p-3">
-              <div>
-                <p className="text-sm font-medium">Monthly Audit</p>
-                <p className="text-xs text-ink-500">1st of every month</p>
+            {isLoading ? (
+              <Skeleton className="h-16 w-full" />
+            ) : (
+              <div className="flex items-center justify-between rounded-md border border-ink-700/5 p-3">
+                <div>
+                  <p className="text-sm font-medium">
+                    {monthlySchedule?.title ?? "Monthly Audit"}
+                  </p>
+                  <p className="text-xs text-ink-500">1st of every month</p>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={monthlySchedule?.enabled ?? false}
+                  className={
+                    "inline-flex h-6 w-11 items-center rounded-full px-1 transition-colors " +
+                    (monthlySchedule?.enabled ? "bg-brand-600" : "bg-ink-300")
+                  }
+                  onClick={() => {
+                    if (!monthlySchedule) return;
+                    void toggle.mutateAsync({
+                      id: monthlySchedule.id,
+                      enabled: !monthlySchedule.enabled,
+                    });
+                  }}
+                >
+                  <span
+                    className={
+                      "h-4 w-4 rounded-full bg-white transition-transform " +
+                      (monthlySchedule?.enabled ? "translate-x-5" : "")
+                    }
+                  />
+                </button>
               </div>
-              <span className="inline-flex h-6 w-11 items-center rounded-full bg-brand-600 px-1">
-                <span className="ml-auto h-4 w-4 rounded-full bg-white" />
-              </span>
-            </div>
-            <button className="w-full rounded-md border border-dashed border-brand-300 px-3 py-2 text-sm text-brand-600">
+            )}
+            <button
+              type="button"
+              className="w-full rounded-md border border-dashed border-brand-300 px-3 py-2 text-sm text-brand-600"
+            >
               <PlusIcon className="inline h-4 w-4" /> Add Schedule
             </button>
           </CardBody>
@@ -84,11 +156,18 @@ function Reports() {
               <DocIcon />
             </span>
             <h3 className="font-display text-2xl">Tax Compliance</h3>
-            <p className="text-sm text-ink-500 max-w-md">
-              Generate specialized reports formatted for cross-border transit, import/export duties,
-              and capital gains assessment for high-value mineral assets.
+            <p className="max-w-md text-sm text-ink-500">
+              Generate specialized reports formatted for cross-border transit,
+              import/export duties, and capital gains assessment for high-value
+              mineral assets.
             </p>
-            <Button className="self-start">Generate Report ⚡</Button>
+            <Button
+              className="self-start"
+              onClick={() => onGenerate("tax_compliance")}
+              disabled={generate.isPending}
+            >
+              Generate Report ⚡
+            </Button>
           </CardBody>
         </Card>
 
@@ -96,23 +175,52 @@ function Reports() {
           <CardBody>
             <div className="flex items-center justify-between">
               <h2 className="font-display text-2xl">Report Library</h2>
-              <a className="text-sm font-medium text-brand-600">View All</a>
+              <span className="text-sm font-medium text-brand-600">View All</span>
             </div>
             <ul className="mt-4 space-y-3">
-              {LIBRARY.map(([name, meta]) => (
-                <li
-                  key={name}
-                  className="flex items-center gap-3 rounded-md border border-ink-700/5 p-3"
-                >
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-rose-50 text-rose-600 text-[10px] font-bold">
-                    PDF
-                  </span>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">{name}</p>
-                    <p className="text-xs text-ink-500">{meta}</p>
-                  </div>
-                </li>
-              ))}
+              {isLoading &&
+                Array.from({ length: 3 }).map((_, i) => (
+                  <Skeleton key={i} className="h-14 w-full" />
+                ))}
+              {data?.library.map((report) => {
+                const date = report.generatedAt
+                  ? new Date(report.generatedAt).toLocaleDateString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })
+                  : "—";
+                return (
+                  <li
+                    key={report.id}
+                    className="flex items-center gap-3 rounded-md border border-ink-700/5 p-3"
+                  >
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-rose-50 text-[10px] font-bold text-rose-600">
+                      PDF
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium">{report.title}</p>
+                      <p className="text-xs text-ink-500">
+                        {date} • {formatFileSize(report.fileSizeBytes)}
+                      </p>
+                    </div>
+                    {report.fileUrl && (
+                      <button
+                        type="button"
+                        className="text-xs font-medium text-brand-600"
+                        onClick={() =>
+                          void downloadReport(report.fileUrl, report.title)
+                        }
+                      >
+                        Download
+                      </button>
+                    )}
+                  </li>
+                );
+              })}
+              {!isLoading && data?.library.length === 0 && (
+                <li className="text-sm text-ink-500">No reports generated yet.</li>
+              )}
             </ul>
           </CardBody>
         </Card>
