@@ -2,6 +2,7 @@
   "rules": {
     "no-floating-promises": "error",
     "no-unused-vars": "error",
-    "react-hooks": "error"
+    "react-hooks": "error",
+    "no-unused-vars": "error"
   }
 }
