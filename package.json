@@ -18,7 +18,9 @@
     "test:watch": "vitest",
     "lint": "oxlint --config packages/config/oxlint.json .",
     "fmt": "oxfmt .",
-    "fmt:check": "oxfmt --check ."
+    "fmt:check": "oxfmt --check .",
+    "sync:editor": "bun scripts/sync-editor-settings.mjs",
+    "postinstall": "bun scripts/sync-editor-settings.mjs"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
