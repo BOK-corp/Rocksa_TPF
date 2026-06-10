@@ -7,6 +7,7 @@ import {
   TruckIcon,
   VaultIcon,
 } from "../../components/Icons.tsx";
+import { WorkspacePageHeader } from "../../components/WorkspacePageHeader.tsx";
 
 export const Route = createFileRoute("/workspace/acquisitions")({ component: Acquisitions });
 
@@ -42,16 +43,16 @@ const SHIPMENTS = [
 
 function Acquisitions() {
   return (
-    <div className="p-10">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="font-display text-5xl">Acquisitions Tracking</h1>
-          <p className="text-ink-500 mt-1">Monitor active inbound logistics and global pipeline.</p>
-        </div>
-        <Button>
-          <PlusIcon className="h-4 w-4" /> New Acquisition
-        </Button>
-      </div>
+    <div className="p-6 md:p-10">
+      <WorkspacePageHeader
+        title="Acquisitions Tracking"
+        subtitle="Monitor active inbound logistics and global pipeline."
+        action={
+          <Button>
+            <PlusIcon className="h-4 w-4" /> New Acquisition
+          </Button>
+        }
+      />
 
       <div className="mt-8 grid gap-4 md:grid-cols-3">
         {[

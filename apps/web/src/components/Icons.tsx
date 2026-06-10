@@ -16,6 +16,12 @@ const Svg = ({ className, children, ...rest }: Props & { children: ReactNode }) 
   </svg>
 );
 
+export const MenuIcon = (p: Props) => (
+  <Svg {...p}>
+    <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
+  </Svg>
+);
+
 export const SearchIcon = (p: Props) => (
   <Svg {...p}>
     <circle cx="11" cy="11" r="7" />

@@ -3,6 +3,7 @@ import { Badge, Button, Card, CardBody } from "@rocksa/ui";
 import { formatPrice } from "@rocksa/domain";
 import { useSpecimens } from "../../data/api-specimens.ts";
 import { PlusIcon } from "../../components/Icons.tsx";
+import { WorkspacePageHeader } from "../../components/WorkspacePageHeader.tsx";
 
 export const Route = createFileRoute("/workspace/inventory")({ component: Inventory });
 
@@ -18,18 +19,16 @@ function Inventory() {
   const { data: items = [] } = useSpecimens();
 
   return (
-    <div className="p-10">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="font-display text-5xl">Inventory</h1>
-          <p className="text-ink-500 mt-1">
-            Manage and track your comprehensive gemstone and mineral collection.
-          </p>
-        </div>
-        <Button>
-          <PlusIcon className="h-4 w-4" /> Add New Specimen
-        </Button>
-      </div>
+    <div className="p-6 md:p-10">
+      <WorkspacePageHeader
+        title="Inventory"
+        subtitle="Manage and track your comprehensive gemstone and mineral collection."
+        action={
+          <Button>
+            <PlusIcon className="h-4 w-4" /> Add New Specimen
+          </Button>
+        }
+      />
 
       <div className="mt-8 flex items-center justify-between rounded-md border border-ink-700/5 bg-white p-3">
         <div className="flex gap-2">

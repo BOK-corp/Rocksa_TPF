@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button, Card, CardBody, Separator } from "@rocksa/ui";
 import { ArrowRightIcon, DocIcon, PlusIcon, VaultIcon } from "../../components/Icons.tsx";
+import { WorkspacePageHeader } from "../../components/WorkspacePageHeader.tsx";
 
 export const Route = createFileRoute("/workspace/reports")({ component: Reports });
 
@@ -27,17 +28,12 @@ const LIBRARY = [
 
 function Reports() {
   return (
-    <div className="p-10">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="font-display text-5xl">Document Vault</h1>
-          <p className="text-ink-500 mt-1 max-w-xl">
-            Generate, schedule, and review highly detailed curator reports for the gemstone
-            collection.
-          </p>
-        </div>
-        <Button variant="secondary">⚙ Export Settings</Button>
-      </div>
+    <div className="p-6 md:p-10">
+      <WorkspacePageHeader
+        title="Document Vault"
+        subtitle="Generate, schedule, and review highly detailed curator reports for the gemstone collection."
+        action={<Button variant="secondary">⚙ Export Settings</Button>}
+      />
 
       <div className="mt-8 grid gap-4 lg:grid-cols-3">
         {GENERATORS.map((g) => {

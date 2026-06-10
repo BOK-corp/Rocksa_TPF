@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Badge, Card, CardBody } from "@rocksa/ui";
 import { TruckIcon, VaultIcon, DiamondIcon } from "../../components/Icons.tsx";
+import { WorkspacePageHeader } from "../../components/WorkspacePageHeader.tsx";
 
 export const Route = createFileRoute("/workspace/overview")({ component: Overview });
 
@@ -47,11 +48,11 @@ const ACTIVITY = [
 
 function Overview() {
   return (
-    <div className="p-10">
-      <h1 className="font-display text-5xl">Overview</h1>
-      <p className="text-ink-500 mt-1">
-        At-a-glance summary of your curated collection and recent logistical activities.
-      </p>
+    <div className="p-6 md:p-10">
+      <WorkspacePageHeader
+        title="Overview"
+        subtitle="At-a-glance summary of your curated collection and recent logistical activities."
+      />
 
       <div className="mt-8 grid gap-4 md:grid-cols-3">
         {STATS.map((s, i) => {
